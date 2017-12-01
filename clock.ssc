@@ -9,7 +9,9 @@ invisible = false;
 //Hide the GUI
 core.setGuiVisible(invisible);
 
-time = LabelMgr.labelScreen("00:00 am", 100, 100, invisible, 200, "#FFFFFF");
+//LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
+//LabelMgr.labelScreen("text", x, y, visibility, font size, color);
+time = LabelMgr.labelHorizon("00:00 am", 240, 0, invisible, 200, "#FFFFFF");
 LabelMgr.setLabelShow(time, visible);
 core.wait(15);
 LabelMgr.setLabelText(time, "11:11 pm");
