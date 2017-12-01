@@ -1,0 +1,18 @@
+//
+// Name: Clock
+// Description: A fullscreen overlay of the current time in the real world.
+//
+
+visible = true;
+invisible = false;
+
+//Hide the GUI
+core.setGuiVisible(invisible);
+
+time = LabelMgr.labelScreen("00:00 am", 100, 100, invisible, 200, "#FFFFFF");
+LabelMgr.setLabelShow(time, visible);
+core.wait(15);
+LabelMgr.setLabelText(time, "11:11 pm");
+core.wait(15);
+LabelMgr.setLabelShow(time, invisible);
+LabelMgr.deleteLabel(time);
