@@ -13,11 +13,11 @@ current_time = new Date;
 hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
 minutes = current_time.getMinutes();
 seconds = current_time.getSeconds();
-display_time = (hours<10?(hours==0?"12":"  "+hours):hours)+":"+minutes+":"+seconds;
+display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+minutes;//+":"+seconds;
 
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time = LabelMgr.labelHorizon(display_time, 240, 0, invisible, 200, "#FFFFFF");
+time = LabelMgr.labelHorizon(display_time, 231, 0, invisible, 250, "#FFFFFF");
 LabelMgr.setLabelShow(time, visible);
 core.wait(1);
 
@@ -26,7 +26,7 @@ while (true) {
     hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
     minutes = current_time.getMinutes();
     seconds = current_time.getSeconds();
-    display_time = (hours<10?(hours==0?"12":"  "+hours):hours)+":"+minutes+":"+seconds;
+    display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+minutes;//+":"+seconds;
 
     LabelMgr.setLabelText(time, display_time);
     core.wait(1);
