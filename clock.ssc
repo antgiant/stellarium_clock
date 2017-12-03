@@ -9,26 +9,23 @@ invisible = false;
 //Hide the GUI
 core.setGuiVisible(invisible);
 
-current_time = new Date;
-hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
-minutes = current_time.getMinutes();
-seconds = current_time.getSeconds();
-display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+minutes;//+":"+seconds;
-
-//LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
-//LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time = LabelMgr.labelHorizon(display_time, 231, 0, invisible, 250, "#FFFFFF");
-LabelMgr.setLabelShow(time, visible);
-core.wait(1);
-
-while (true) {
+function get_display_time() {
     current_time = new Date;
     hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
     minutes = current_time.getMinutes();
     seconds = current_time.getSeconds();
-    display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+minutes;//+":"+seconds;
+    display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+    return display_time;
+}
 
-    LabelMgr.setLabelText(time, display_time);
+//LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
+//LabelMgr.labelScreen("text", x, y, visibility, font size, color);
+time = LabelMgr.labelScreen(get_display_time(), 2, 15, invisible, 230, "#880000");
+LabelMgr.setLabelShow(time, visible);
+core.wait(1);
+
+while (true) {
+    LabelMgr.setLabelText(time, get_display_time());
     core.wait(1);
 }
 LabelMgr.setLabelShow(time, invisible);
