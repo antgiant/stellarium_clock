@@ -20,7 +20,7 @@ function get_display_time() {
 
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time = LabelMgr.labelScreen(get_display_time(), 2, 15, invisible, 230, "#1E73BE");
+time = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
 LabelMgr.setLabelShow(time, visible);
 core.wait(1);
 
