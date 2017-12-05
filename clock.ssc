@@ -18,11 +18,17 @@ function get_display_time() {
     return display_time;
 }
 
+function seconds_till_next_minute() {
+    current_time = new Date;
+    seconds = current_time.getSeconds();
+    return (60-seconds);
+}
+
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
 time = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
 LabelMgr.setLabelShow(time, visible);
-core.wait(1);
+core.wait(seconds_till_next_minute());
 
 while (true) {
     LabelMgr.setLabelText(time, get_display_time());
