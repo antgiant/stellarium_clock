@@ -30,6 +30,13 @@ function wait_till_next_minute() {
     core.wait(1);
 }
 
+function update_view() {
+    core.selectObjectByName("Sun", false);
+    sun = core.getSelectedObjectInfo();
+    core.moveToAltAzi(0, sun["azimuth"], 0);
+}
+
+update_view();
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
 time = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
@@ -37,6 +44,7 @@ LabelMgr.setLabelShow(time, visible);
 wait_till_next_minute();
 
 while (true) {
+    update_view();
     LabelMgr.setLabelText(time, get_display_time());
     wait_till_next_minute();
 }
