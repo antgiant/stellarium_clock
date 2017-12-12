@@ -8,6 +8,12 @@ invisible = false;
 
 //Hide the GUI
 core.setGuiVisible(invisible);
+//Set the display options
+core.clear("natural");
+//Go to default view
+core.goHome();
+//60° FOV
+StelMovementMgr.zoomTo(60, 0);
 
 function get_display_time() {
     current_time = new Date;
