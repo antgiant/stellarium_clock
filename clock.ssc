@@ -3,8 +3,13 @@
 // Description: A fullscreen overlay of the current time in the real world.
 //
 
+include("location.js");
+include("suncalc.js");
+
 visible = true;
 invisible = false;
+v_fov = 20;
+h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration of 2:1
 
 //Hide things
 core.setGuiVisible(invisible);
@@ -14,8 +19,8 @@ Satellites.setFlagLabels(false);
 core.clear("natural");
 //Go to default view
 core.goHome();
-//60° FOV
-StelMovementMgr.zoomTo(60, 0);
+StelMovementMgr.setInitFov(v_fov);
+StelMovementMgr.setMaxFov(v_fov);
 
 function get_display_time() {
     current_time = new Date;
@@ -35,7 +40,10 @@ function wait_till_next_minute() {
 function update_view() {
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
-    core.moveToAltAzi(0, sun["azimuth"], 0);
+    view_offset = -7.25 + ((sun["azimuth"]-180)/(180/(h_fov/2)));
+//    view_offset += ((0-180)/(180/(h_fov/2)));
+//    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
+    core.moveToAltAzi(0, (sun["azimuth"]+view_offset), 0);
 }
 
 update_view();
