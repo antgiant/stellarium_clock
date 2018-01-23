@@ -9,7 +9,7 @@ invisible = false;
 //Hide things
 core.setGuiVisible(invisible);
 MeteorShowers.setEnableLabels(false);
-Satellites::setFlagLabels(false);
+Satellites.setFlagLabels(false);
 //Set the display options
 core.clear("natural");
 //Go to default view
