@@ -21,6 +21,19 @@ core.clear("natural");
 core.goHome();
 StelMovementMgr.setInitFov(v_fov);
 StelMovementMgr.setMaxFov(v_fov);
+core.selectObjectByName("Sun", false);
+//StelMovementMgr.setFlagTracking(true);
+//Find the furthest east and west the sun will go while visible.
+//https://astronomy.stackexchange.com/questions/24598/how-to-calculate-the-maximum-and-minimum-solar-azimuth-at-a-given-location
+sunrise_max = 180.0 - degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
+sunset_max = 180.0 + degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
+max_azimuth_range = sunset_max - sunrise_max;
+
+// core.debug('sunrise_max = ' + sunrise_max);
+// core.debug('sunset_max = ' + sunset_max);
+// core.debug('max_azimuth_range = ' + max_azimuth_range);
+// core.debug('lat = ' + lat);
+// core.debug('h_fov = ' + h_fov);
 
 function get_display_time() {
     current_time = new Date;
@@ -40,10 +53,14 @@ function wait_till_next_minute() {
 function update_view() {
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
-    view_offset = -7.25 + ((sun["azimuth"]-180)/(180/(h_fov/2)));
-//    view_offset += ((0-180)/(180/(h_fov/2)));
+
+    viewport_offset = 50 - (((sun["azimuth"] - sunrise_max)/max_azimuth_range)*100);
+//    core.debug('viewport_offset = ' + viewport_offset);
+    StelMovementMgr.setViewportHorizontalOffsetTarget(viewport_offset);
+    StelMovementMgr.setViewportVerticalOffsetTarget(0);
+
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
-    core.moveToAltAzi(0, (sun["azimuth"]+view_offset), 0);
+    core.moveToAltAzi(6, sun["azimuth"], 0);
 }
 
 update_view();
