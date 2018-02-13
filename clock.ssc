@@ -14,8 +14,10 @@ h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration o
 
 //Hide things
 core.setGuiVisible(invisible);
-MeteorShowers.setEnableLabels(false);
-Satellites.setFlagLabels(false);
+try {
+    MeteorShowers.setEnableLabels(false);
+    Satellites.setFlagLabels(false);
+} catch(e) {/*Ignore Failure*/}
 //Set the display options
 core.clear("natural");
 //Setup default view
