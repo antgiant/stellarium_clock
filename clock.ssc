@@ -18,7 +18,7 @@ MeteorShowers.setEnableLabels(false);
 Satellites.setFlagLabels(false);
 //Set the display options
 core.clear("natural");
-//Go to default view
+//Setup default view
 core.setObserverLocation(lon, lat, alt, 0, place, "");
 StelMovementMgr.setInitFov(v_fov);
 StelMovementMgr.setMaxFov(v_fov);
@@ -29,7 +29,6 @@ core.selectObjectByName("Sun", false);
 sunrise_max = 180.0 - degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
 sunset_max = 180.0 + degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
 max_azimuth_range = sunset_max - sunrise_max;
-
 // core.debug('sunrise_max = ' + sunrise_max);
 // core.debug('sunset_max = ' + sunset_max);
 // core.debug('max_azimuth_range = ' + max_azimuth_range);
@@ -59,20 +58,37 @@ function update_view() {
     StelMovementMgr.setViewportVerticalOffsetTarget(0);
 
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
-    core.moveToAltAzi(6, sun["azimuth"], 0);
+    core.moveToAltAzi(7, sun["azimuth"], 0);
 }
 
 update_view();
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
-LabelMgr.setLabelShow(time, visible);
+time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#00FF00");
+time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
+if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
+    LabelMgr.setLabelShow(time_day, visible);
+    LabelMgr.setLabelShow(time_night, invisible);
+} else {
+    LabelMgr.setLabelShow(time_night, visible);
+    LabelMgr.setLabelShow(time_day, invisible);
+}
 wait_till_next_minute();
 
 while (true) {
     update_view();
-    LabelMgr.setLabelText(time, get_display_time());
+    if (sun["altitude"] > -6 && !LabelMgr.getLabelShow(time_day)) { //-6 is end of Civil Twilight
+    LabelMgr.setLabelShow(time_day, visible);
+    LabelMgr.setLabelShow(time_night, invisible);
+    } else if (sun["altitude"] <= -6 && !LabelMgr.getLabelShow(time_night)) {
+    LabelMgr.setLabelShow(time_night, visible);
+    LabelMgr.setLabelShow(time_day, invisible);
+    }
+    LabelMgr.setLabelText(time_day, get_display_time());
+    LabelMgr.setLabelText(time_night, get_display_time());
     wait_till_next_minute();
 }
-LabelMgr.setLabelShow(time, invisible);
-LabelMgr.deleteLabel(time);
+LabelMgr.setLabelShow(time_day, invisible);
+LabelMgr.setLabelShow(time_night, invisible);
+LabelMgr.deleteLabel(time_day);
+LabelMgr.deleteLabel(time_night);
