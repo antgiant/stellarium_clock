@@ -15,10 +15,23 @@
 	{
 		return (Math.PI/180.0)*degrees;
 	}
-	
+
 	function degrees(radians)
 	{
 		return (180.0/Math.PI)*radians;
+	}
+
+	function excel_to_javascript_time(excel_time)
+	{
+		var t = new Date();  //Assume current date for time
+		excel_time = excel_time - Math.floor(excel_time); //Remove date portion if there is one
+
+		var seconds_time = excel_time*24*60*60;
+		t.setHours(seconds_time/(60*60));		//Hours since midnight.
+		t.setMinutes((seconds_time/60)%60);		//Minutes after the hour.
+		t.setSeconds(seconds_time%(60));		//Seconds after the minute.
+
+		return t;
 	}
 
 	function ha_sunrise_deg_calc(angle, lat, sun_declin_deg) 
@@ -27,16 +40,20 @@
 	}
 
 	//angle = 90.833 for sunrise & sunset
-	function my_azimuths(my_time, angle) {
+	function suntimes(angle) {
+		my_time = new Date;
 		core.debug('lat= ' + lat);
 		core.debug('lon= ' + lon);
+		core.debug('timezone='+(-my_time.getTimezoneOffset()/60.0));
 		core.debug('my_time= ' + my_time);
 		core.debug('angle= ' + angle);
 
 		//Initialize Return Object
-		var return_values = {
-			min_azimuth:0,
-			max_azimuth:360
+		var return_times = {
+			sun_declin_deg:-1,
+			solar_noon:my_time,
+			sunup:my_time,
+			sundown:my_time,
 		};
 		
 		//Julian date formula from http://en.wikipedia.org/wiki/Julian_day
@@ -47,7 +64,7 @@
 		//Day portion
 		var julian_day = my_time.getDate() + (((153*month) + 2)/5) + (365*year) + (year/4) - (year/100) + (year/400) - 32045;
 		//Time portion
-		julian_day += ((my_time.getHours() - timezone -12)/24.0) + (my_time.getMinutes()/1440.0) + (my_time.getSeconds()/86400.0);
+		julian_day += ((my_time.getHours() - (-my_time.getTimezoneOffset()/60.0) -12)/24.0) + (my_time.getMinutes()/1440.0) + (my_time.getSeconds()/86400.0);
 
 		var julian_century = (julian_day-2451545.0)/36525.0;
 
@@ -63,13 +80,16 @@
 		var mean_obliq_ecliptic_deg	= 23 + (26 + ((21.448 - julian_century*(46.815 + julian_century*(0.00059 - julian_century*0.001813))))/60)/60;
 		var obliq_corr_deg = mean_obliq_ecliptic_deg + 0.00256*Math.cos(radians(125.04 - 1934.136*julian_century));
 
-		var sun_declin_deg = degrees(Math.asin(Math.sin(radians(obliq_corr_deg))*Math.sin(radians(sun_app_long_deg))));
+		return_times.sun_declin_deg = degrees(Math.asin(Math.sin(radians(obliq_corr_deg))*Math.sin(radians(sun_app_long_deg))));
 		var y = Math.tan(radians(obliq_corr_deg/2))*Math.tan(radians(obliq_corr_deg/2));
 		var eq_of_time_minutes = 4*degrees(y*Math.sin(2*radians(geom_mean_long_sun_deg)) - 2*eccent_earth_orbit*Math.sin(radians(geom_mean_anom_sun_deg)) + 4*eccent_earth_orbit*y*Math.sin(radians(geom_mean_anom_sun_deg))*Math.cos(2*radians(geom_mean_long_sun_deg)) - 0.5*y*y*Math.sin(4*radians(geom_mean_long_sun_deg)) - 1.25*eccent_earth_orbit*eccent_earth_orbit*Math.sin(2*radians(geom_mean_anom_sun_deg)));
-		var ha_sunrise_deg = ha_sunrise_deg_calc(angle, lat, sun_declin_deg);
-		var solar_noon_LST = (720 - 4*lon - eq_of_time_minutes+timezone*60)/1440;
+		var ha_sunrise_deg = ha_sunrise_deg_calc(angle, lat, return_times.sun_declin_deg);
+		var solar_noon_LST = (720 - 4*lon - eq_of_time_minutes-my_time.getTimezoneOffset())/1440;
+		return_times.solar_noon = excel_to_javascript_time(solar_noon_LST);
 		var sunrise_time_LST = solar_noon_LST - ha_sunrise_deg*4/1440;
+		return_times.sunup = excel_to_javascript_time(sunrise_time_LST);
 		var sunset_time_LST = solar_noon_LST + ha_sunrise_deg*4/1440;
+		return_times.sundown= excel_to_javascript_time(sunset_time_LST);
 
-		return return_values;
+		return return_times;
 	}
