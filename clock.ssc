@@ -87,12 +87,12 @@ function update_view() {
 update_view();
 //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
 //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#00FF00");
+time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#FFFFFF");
 time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
 seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
 seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+(seconds_till_sunset % 60), 0, 300, invisible, 72, "FF00FF");
-sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+(seconds_till_sunrise % 60), 600, 300, invisible, 72, "FF00FF");
+sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+(seconds_till_sunset % 60), 0, 300, invisible, 72, "FFFFFF");
+sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+(seconds_till_sunrise % 60), 600, 300, invisible, 72, "FFFFFF");
 if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
     LabelMgr.setLabelShow(time_day, visible);
     LabelMgr.setLabelShow(time_night, invisible);
