@@ -91,8 +91,8 @@ time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#F
 time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
 seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
 seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+(seconds_till_sunset % 60), 0, 300, invisible, 72, "FFFFFF");
-sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+(seconds_till_sunrise % 60), 600, 300, invisible, 72, "FFFFFF");
+sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, invisible, 72, "#FFFFFF");
+sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, invisible, 72, "#FFFFFF");
 if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
     LabelMgr.setLabelShow(time_day, visible);
     LabelMgr.setLabelShow(time_night, invisible);
@@ -123,8 +123,8 @@ while (true) {
     }
     LabelMgr.setLabelText(time_day, get_display_time());
     LabelMgr.setLabelText(time_night, get_display_time());
-    LabelMgr.setLabelText(sunset_countdown, Math.floor(seconds_till_sunset/60)+":"+(seconds_till_sunset % 60));
-    LabelMgr.setLabelText(sunrise_countdown, Math.floor(seconds_till_sunrise/60)+":"+(seconds_till_sunrise % 60));
+    LabelMgr.setLabelText(sunset_countdown, Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60));
+    LabelMgr.setLabelText(sunrise_countdown, Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60));
     wait_till_next_minute();
 }
 LabelMgr.setLabelShow(time_day, invisible);
