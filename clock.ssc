@@ -65,10 +65,9 @@ function get_display_time() {
     return display_time;
 }
 
-function wait_till_next_minute() {
-    current_time = new Date;
-    seconds = current_time.getSeconds();
-    core.wait(1);
+function wait_till_next_tick(tick_length) {
+    tick_length = (typeof tick_length !== 'undefined') ?  tick_length : 1;
+    core.wait(tick_length);
 }
 
 function update_view() {
@@ -84,50 +83,22 @@ function update_view() {
     core.moveToAltAzi(7, sun["azimuth"], 0);
 }
 
-update_view();
-//LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
-//LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#FFFFFF");
-time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, invisible, 280, "#1E73BE");
-seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, invisible, 72, "#FFFFFF");
-sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, invisible, 72, "#FFFFFF");
-if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
-    LabelMgr.setLabelShow(time_day, visible);
-    LabelMgr.setLabelShow(time_night, invisible);
-} else {
-    LabelMgr.setLabelShow(time_night, visible);
-    LabelMgr.setLabelShow(time_day, invisible);
-}
-wait_till_next_minute();
-
 while (true) {
     update_view();
-    if (sun["altitude"] > -6 && !LabelMgr.getLabelShow(time_day)) { //-6 is end of Civil Twilight
-        LabelMgr.setLabelShow(time_day, visible);
-        LabelMgr.setLabelShow(time_night, invisible);
-    } else if (sun["altitude"] <= -6 && !LabelMgr.getLabelShow(time_night)) {
-        LabelMgr.setLabelShow(time_night, visible);
-        LabelMgr.setLabelShow(time_day, invisible);
+    //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
+    //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
+    seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+    seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+    if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
+        time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#FFFFFF", true, 1000);
+    } else {
+        time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#1E73BE", true, 1000);
     }
-    if (!LabelMgr.getLabelShow(sunset_countdown) && seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
-        LabelMgr.setLabelShow(sunset_countdown, visible);
-    } else if (LabelMgr.getLabelShow(sunset_countdown) && (seconds_till_sunset <= 0 || seconds_till_sunset >= 60*60)) {
-        LabelMgr.setLabelShow(sunset_countdown, invisible)
-    }
-    if (!LabelMgr.getLabelShow(sunrise_countdown) && seconds_till_sunrise> 0 && seconds_till_sunrise < 60*60) {
-        LabelMgr.setLabelShow(sunrise_countdown, visible);
-    } else if (LabelMgr.getLabelShow(sunrise_countdown) && (seconds_till_sunrise <= 0 || seconds_till_sunrise >= 60*60)) {
-        LabelMgr.setLabelShow(sunrise_countdown, invisible)
-    }
-    LabelMgr.setLabelText(time_day, get_display_time());
-    LabelMgr.setLabelText(time_night, get_display_time());
-    LabelMgr.setLabelText(sunset_countdown, Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60));
-    LabelMgr.setLabelText(sunrise_countdown, Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60));
-    wait_till_next_minute();
+    if (seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
+        sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, 800);
+    } 
+    if (seconds_till_sunrise > 0 && seconds_till_sunrise < 60*60) {
+        sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, 800);
+    } 
+    wait_till_next_tick();
 }
-LabelMgr.setLabelShow(time_day, invisible);
-LabelMgr.setLabelShow(time_night, invisible);
-LabelMgr.deleteLabel(time_day);
-LabelMgr.deleteLabel(time_night);
