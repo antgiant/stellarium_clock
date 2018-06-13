@@ -16,6 +16,7 @@ visible = true;
 invisible = false;
 v_fov = 20;
 h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration of 2:1
+displayed_time = "";
 //     core.debug('h_fov = ' + h_fov);
 
 //Hide things
@@ -89,10 +90,14 @@ while (true) {
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
     seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
     seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-    if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
-        time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#FFFFFF", true, 1000);
-    } else {
-        time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#1E73BE", true, 1000);
+    if (displayed_time != get_display_time()) {
+        time_left = 60500 - ((new Date).getSeconds()*1000) - (new Date).getMilliseconds();
+        if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
+            time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#FFFFFF", true, time_left);
+        } else {
+            time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#1E73BE", true, time_left);
+        }
+        displayed_time = get_display_time();
     }
     if (seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
         sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, 800);
