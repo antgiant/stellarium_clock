@@ -100,10 +100,12 @@ while (true) {
         displayed_time = get_display_time();
     }
     if (seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
-        sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, 800);
+        time_left = 800 - (new Date).getMilliseconds();
+        sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
     if (seconds_till_sunrise > 0 && seconds_till_sunrise < 60*60) {
-        sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, 800);
+        time_left = 800 - (new Date).getMilliseconds();
+        sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
-    wait_till_next_tick();
+    wait_till_next_tick(time_left/1000);
 }
