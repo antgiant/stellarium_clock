@@ -83,22 +83,21 @@ function update_view() {
 
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
     core.moveToAltAzi(7, sun["azimuth"], 0);
-}
-
-while (true) {
-    update_view();
 
     //Update sun data to new location
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
+}
 
+while (true) {
+    update_view();
     //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
     seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
     seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
     if (displayed_time != get_display_time()) {
         time_left = 60500 - ((new Date).getSeconds()*1000) - (new Date).getMilliseconds();
-        if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
+        if (sun["altitude"] > -6 || sun["altitude"] < -180) { //-6 is end of Civil Twilight & < -180 should be impossible
             time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#FFFFFF", true, time_left);
         } else {
             time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#1E73BE", true, time_left);
