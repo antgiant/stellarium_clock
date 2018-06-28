@@ -83,7 +83,9 @@ function update_view() {
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
     core.moveToAltAzi(7, sun["azimuth"], 0);
 }
+//Update where the viewer is pointed
 update_view();
+//Wait a half second or so to allow the screen to actually update
 wait_till_next_tick(500/1000);
 
 while (true) {
