@@ -83,14 +83,15 @@ function update_view() {
 
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
     core.moveToAltAzi(7, sun["azimuth"], 0);
-
-    //Update sun data to new location
-    core.selectObjectByName("Sun", false);
-    sun = core.getSelectedObjectInfo();
 }
 
 while (true) {
     update_view();
+
+    //Update sun data to new location
+    core.selectObjectByName("Sun", false);
+    sun = core.getSelectedObjectInfo();
+
     //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
     seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
