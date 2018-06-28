@@ -111,5 +111,6 @@ while (true) {
         time_left = 800 - (new Date).getMilliseconds();
         sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
-    wait_till_next_tick(time_left/1000);
+    //Always tick at least once a second to prevent large jumps of background.
+    wait_till_next_tick((time_left/1000)%1000);
 }
