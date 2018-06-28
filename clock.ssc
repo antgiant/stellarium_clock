@@ -72,6 +72,7 @@ function wait_till_next_tick(tick_length) {
 }
 
 function update_view() {
+    //Select Sun
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
 
@@ -82,6 +83,10 @@ function update_view() {
 
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
     core.moveToAltAzi(7, sun["azimuth"], 0);
+
+    //Update sun data to new location
+    core.selectObjectByName("Sun", false);
+    sun = core.getSelectedObjectInfo();
 }
 
 while (true) {
