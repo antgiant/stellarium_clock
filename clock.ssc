@@ -84,6 +84,7 @@ function update_view() {
     core.moveToAltAzi(7, sun["azimuth"], 0);
 }
 update_view();
+wait_till_next_tick(500/1000);
 
 while (true) {
     update_view();
