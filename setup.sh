@@ -13,29 +13,6 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'Route all traffic through ZeroTier (y/n): ' zerotier_full_tunnel
 fi
 
-#Drop resolution to something with an aspect ratio identical to the screen say 800X400
-#From <https://learn.adafruit.com/adafruit-5-800x480-tft-hdmi-monitor-touchscreen-backpack/raspberry-pi-config> 
-cat <<EOF | sudo tee -a /boot/config.txt
-
-# uncomment if hdmi display is not detected and composite is being output
-hdmi_force_hotplug=1
-
-# uncomment to force a specific HDMI mode (here we are forcing 800x480!)
-hdmi_group=2
-hdmi_mode=87
-hdmi_cvt=800 400 60 6 0 0 0
-hdmi_drive=1
-EOF
-#set aside 3rd processor for LED Screen
-sudo sed -i -e 's/rootwait/rootwait isolcpus=3 /g' /boot/cmdline.txt
-
-
-#Kill sound (From <https://github.com/hzeller/rpi-rgb-led-matrix>)
-cat <<EOF | sudo tee /etc/modprobe.d/blacklist-rgb-matrix.conf
-blacklist snd_bcm2835
-EOF
-sudo update-initramfs -u
-
 #Install LED Panel Prereqs
 #Required for installing APT Keys
 sudo apt-get install dirmngr -y
@@ -46,13 +23,29 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     echo "deb https://download.zerotier.com/debian/stretch stretch main" | sudo tee -a /etc/apt/sources.list
     #ZeroTier (From <http://blog.mxard.com/persistent-iptables-on-raspberry-pi-raspbian>)
     sudo apt-get update
-    sudo apt-get install -y iptables-persistent zerotier-one
+    if [ "$zerotier_full_tunnel" != "${zerotier_full_tunnel#[Yy]}" ] ;then
+        #dirmngr install may have failed in ZeroTier traffic only situation.
+        sudo apt-get install -y --allow-unauthenticated zerotier-one
+    else
+        sudo apt-get install -y zerotier-one
+    fi
 
     #Setup zerotier
     #sudo ./zerotier-one -d
     sudo zerotier-cli join $zerotier_network_id 
 
+    #Route all traffic through ZeroTier (aka Full Tunnel) 
+    if [ "$zerotier_full_tunnel" != "${zerotier_full_tunnel#[Yy]}" ] ;then
+        sudo zerotier-cli set $zerotier_network_id allowDefault=true
+        read -p 'Press return when computer is active on ZeroTier'
+        #Retry dirmngr install incase it failed earlier
+        sudo apt-get install dirmngr -y
+        sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 1657198823E52A61
+    fi
+
     #Log into my.zerotier.com and enable account
+
+    sudo apt-get install -y iptables-persistent
 
     #Setup forwarding and firewall for forwarding of ZeroTier Traffic (From <https://support.zerotier.com/knowledgebase.php?article=ZWFhNWMyMTZjODY1ODcwNmFhZmJjYmRhN2I5MjRhOGQ_>)
     sudo sed -i -e 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
@@ -82,10 +75,6 @@ EOF
     #sudo reboot
     #In case of trouble check routing table https://unix.stackexchange.com/questions/180553/proper-syntax-to-delete-default-route-for-a-particular-interface
 
-    #Route all traffic through ZeroTier (aka Full Tunnel) 
-    if [ "$zerotier_full_tunnel" != "${zerotier_full_tunnel#[Yy]}" ] ;then
-        sudo zerotier-cli set $zerotier_network_id allowDefault=true
-    fi
 fi
 
 #Install screen clone (rpi-fb-matrix) (From <https://github.com/adafruit/rpi-fb-matrix>)
@@ -105,6 +94,29 @@ sudo sed -i -e 's/#DEFINES+=-DFIXED_FRAME_MICROSECONDS=5000/DEFINES+=-DFIXED_FRA
 #nano ~/rpi-fb-matrix/rpi-rgb-led-matrix/lib/Makefile
 #Uncomment “DEFINES+=-DFIXED_FRAME_MICROSECONDS=5000”
 make 
+
+#Drop resolution to something with an aspect ratio identical to the screen say 800X400
+#From <https://learn.adafruit.com/adafruit-5-800x480-tft-hdmi-monitor-touchscreen-backpack/raspberry-pi-config> 
+cat <<EOF | sudo tee -a /boot/config.txt
+
+# uncomment if hdmi display is not detected and composite is being output
+hdmi_force_hotplug=1
+
+# uncomment to force a specific HDMI mode (here we are forcing 800x480!)
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt=800 400 60 6 0 0 0
+hdmi_drive=1
+EOF
+#set aside 3rd processor for LED Screen
+sudo sed -i -e 's/rootwait/rootwait isolcpus=3 /g' /boot/cmdline.txt
+
+
+#Kill sound (From <https://github.com/hzeller/rpi-rgb-led-matrix>)
+cat <<EOF | sudo tee /etc/modprobe.d/blacklist-rgb-matrix.conf
+blacklist snd_bcm2835
+EOF
+sudo update-initramfs -u
 
 #Raspbian GUI  (From <https://lb.raspberrypi.org/forums/viewtopic.php?f=66&t=133691>)
 sudo apt-get install -y raspberrypi-ui-mods
