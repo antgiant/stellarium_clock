@@ -10,7 +10,7 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'ZeroTier IP Range: ' zerotier_ip_range
     read -p 'ZeroTier Network ID: ' zerotier_network_id
     read -p 'Local DNS Server for ZeroTier forwarded traffic (Leave blank to skip): ' zerotier_dns_server
-    read -p 'Route all traffic through ZeroTier (y/n): ' zerotier_full_tunnel
+    read -p 'Route all traffic through ZeroTier? (y/n) ' zerotier_full_tunnel
 fi
 
 #Install LED Panel Prereqs
