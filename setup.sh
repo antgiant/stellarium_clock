@@ -170,14 +170,6 @@ EOF
 #sudo crontab -e
 #0 2 * * * /sbin/reboot
 
-#Set ZeroTier and LED Screen to autostart (Add before exit 0)
-sudo sed -i -e 's/exit 0/sudo \/home\/pi\/ZeroTierOne\/zerotier-one -d\
-sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
-exit 0/g' /etc/rc.local
-#sudo nano /etc/rc.local
-#   sudo /home/pi/ZeroTierOne/zerotier-one -d
-#	sudo /home/pi/rpi-fb-matrix/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1
-
 #Set Stellarium to autostart
 : <<'END'
 cat <<EOF | tee -a ~/.xinitrc
@@ -192,6 +184,14 @@ END
 #	xset -dpms     # disable DPMS (Energy Star) features.
 #	xset s noblank # don't blank the video device
 #	stellarium --startup-script=clock.ssc
+
+#Set LED Screen & Stellarium to autostart
+sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
+@xset s off     # do not activate screensaver\
+@xset -dpms     # disable DPMS (Energy Star) features.\
+@xset s noblank # do not blank the video device\
+stellarium --startup-script=clock.ssc\
+@xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
 
 #Set X to Autostart
 : <<'END'
