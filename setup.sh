@@ -170,21 +170,6 @@ EOF
 #sudo crontab -e
 #0 2 * * * /sbin/reboot
 
-#Set Stellarium to autostart
-: <<'END'
-cat <<EOF | tee -a ~/.xinitrc
-xset s off     # don't activate screensaver
-xset -dpms     # disable DPMS (Energy Star) features.
-xset s noblank # don't blank the video device
-stellarium --startup-script=clock.ssc
-EOF
-END
-#nano .xinitrc
-#	xset s off     # don't activate screensaver
-#	xset -dpms     # disable DPMS (Energy Star) features.
-#	xset s noblank # don't blank the video device
-#	stellarium --startup-script=clock.ssc
-
 #Set LED Screen & Stellarium to autostart
 sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
 @xset s off     # do not activate screensaver\
@@ -192,12 +177,3 @@ sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-c
 @xset s noblank # do not blank the video device\
 stellarium --startup-script=clock.ssc\
 @xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
-
-#Set X to Autostart
-: <<'END'
-cat <<EOF | tee -a ~/.bashrc
-startx
-EOF
-END
-#nano .bashrc
-#   startx
