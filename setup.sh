@@ -9,7 +9,7 @@ read -p 'Use ZeroTier? (y/n) ' use_zerotier
 if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'ZeroTier IP Range: ' zerotier_ip_range
     read -p 'ZeroTier Network ID: ' zerotier_network_id
-    read -p 'Local DNS Server for ZeroTier forwarded traffic: ' zerotier_dns_server
+    read -p 'Local DNS Server for ZeroTier forwarded traffic (Leave blank to skip): ' zerotier_dns_server
 fi
 
 #Drop resolution to something with an aspect ratio identical to the screen say 800X400
@@ -73,10 +73,11 @@ COMMIT
 COMMIT
 EOF
 
-    #DNS workaround 
-    sudo sed -i -e "s/\:PREROUTING ACCEPT \[0\:0\]/\:PREROUTING ACCEPT [0\:0]\n-A PREROUTING -dport 53 -j DNAT --to-destination $zerotier_dns_server/g" /etc/iptables/rules.v4
-    #-A PREROUTING -dport 53 -j DNAT --to-destination $zerotier_dns_server
-
+    if [ "$zerotier_dns_server" != "" ] ;then
+        #DNS workaround 
+        sudo sed -i -e "s/\:PREROUTING ACCEPT \[0\:0\]/\:PREROUTING ACCEPT [0\:0]\n-A PREROUTING -dport 53 -j DNAT --to-destination $zerotier_dns_server/g" /etc/iptables/rules.v4
+        #-A PREROUTING -dport 53 -j DNAT --to-destination $zerotier_dns_server
+    fi
     #sudo reboot
     #In case of trouble check routing table https://unix.stackexchange.com/questions/180553/proper-syntax-to-delete-default-route-for-a-particular-interface
 
