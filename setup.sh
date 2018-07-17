@@ -10,6 +10,7 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'ZeroTier IP Range: ' zerotier_ip_range
     read -p 'ZeroTier Network ID: ' zerotier_network_id
     read -p 'Local DNS Server for ZeroTier forwarded traffic (Leave blank to skip): ' zerotier_dns_server
+    read -p 'Route all traffic through ZeroTier (y/n): ' zerotier_full_tunnel
 fi
 
 #Drop resolution to something with an aspect ratio identical to the screen say 800X400
@@ -81,8 +82,10 @@ EOF
     #sudo reboot
     #In case of trouble check routing table https://unix.stackexchange.com/questions/180553/proper-syntax-to-delete-default-route-for-a-particular-interface
 
-    #On Machine you want to enable full tunnel run 
-    #sudo zerotier-cli set $zerotier_network_id allowDefault=true
+    #Route all traffic through ZeroTier (aka Full Tunnel) 
+    if [ "$zerotier_full_tunnel" != "${zerotier_full_tunnel#[Yy]}" ] ;then
+        sudo zerotier-cli set $zerotier_network_id allowDefault=true
+    fi
 fi
 
 #Install screen clone (rpi-fb-matrix) (From <https://github.com/adafruit/rpi-fb-matrix>)
