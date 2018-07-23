@@ -119,13 +119,13 @@ EOF
 sudo update-initramfs -u
 
 #Raspbian GUI  (From <https://lb.raspberrypi.org/forums/viewtopic.php?f=66&t=133691>)
-sudo apt-get install -y raspberrypi-ui-mods
+#sudo apt-get install -y raspberrypi-ui-mods
 #sudo apt-get install --no-install-recommends xserver-xorg
 #sudo apt-get install --no-install-recommends xinit
 
 #(Optional full GUI) 
-#sudo apt-get install raspberrypi-ui-mods
-#sudo apt-get install lightdm
+sudo apt-get install raspberrypi-ui-mods
+sudo apt-get install lightdm
 
 #(Optional minimal GUI)
 #sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
