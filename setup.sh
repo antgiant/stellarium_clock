@@ -77,6 +77,10 @@ EOF
 
 fi
 
+#Ensure pi is up to date.
+sudo apt-get update
+sudo apt-get upgrade -y
+
 #Install screen clone (rpi-fb-matrix) (From <https://github.com/adafruit/rpi-fb-matrix>)
 #RPI-fb-matrix (From <https://github.com/adafruit/rpi-fb-matrix>)
 sudo apt-get install -y git build-essential libconfig++-dev
