@@ -124,8 +124,8 @@ sudo update-initramfs -u
 #sudo apt-get install --no-install-recommends xinit
 
 #(Optional full GUI) 
-sudo apt-get install raspberrypi-ui-mods
-sudo apt-get install lightdm
+sudo apt-get install -y raspberrypi-ui-mods
+sudo apt-get install -y lightdm
 
 #(Optional minimal GUI)
 #sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
