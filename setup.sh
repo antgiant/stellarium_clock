@@ -106,7 +106,7 @@ cat <<EOF | sudo tee -a /boot/config.txt
 # uncomment if hdmi display is not detected and composite is being output
 hdmi_force_hotplug=1
 
-# uncomment to force a specific HDMI mode (here we are forcing 800x480!)
+# uncomment to force a specific HDMI mode (here we are forcing 800x400!)
 hdmi_group=2
 hdmi_mode=87
 hdmi_cvt=800 400 60 6 0 0 0
