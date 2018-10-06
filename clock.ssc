@@ -17,6 +17,8 @@ invisible = false;
 v_fov = 20;
 h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration of 2:1
 displayed_time = "";
+tock = true;
+
 //     core.debug('h_fov = ' + h_fov);
 
 //Hide things
@@ -66,9 +68,22 @@ function get_display_time() {
     return display_time;
 }
 
-function wait_till_next_tick(tick_length) {
-    tick_length = (typeof tick_length !== 'undefined') ?  tick_length : 1;
-    core.wait(tick_length);
+function wait_till_next_tick() {
+    //Wait is relative to Sim Time not Real time, try and tick exactly on the second.
+    if (Math.round(core.getTimeRate()) == 0) {
+        //Sim Time frozen. Resort to 1 second waits.
+        core.debug((tock?"Tock ":"Tick ")+
+        "Next "+(!tock?"Tock ":"Tick ")+" in 1 second (Time Currently Paused)");
+        core.wait(1);
+    } else {
+        wait_len = Math.abs((1*core.getTimeRate())/(core.getTimeRate()<=18 && core.getTimeRate()>=-18?core.getTimeRate():18));
+        tock = !tock;
+        core.debug((tock?"Tock ":"Tick ")+
+                "Next "+(!tock?"Tock ":"Tick ")+" in "+(core.getTimeRate()<0?"- ":"+ ")+wait_len+' "seconds" '+
+                'at roughly '+Math.abs(core.getTimeRate()<=18 && core.getTimeRate()>=-18?core.getTimeRate():18)+" fps");
+
+        core.waitFor((core.getTimeRate()<0?"- ":"+ ")+wait_len+" seconds", "utc");
+    }
 }
 
 function update_view() {
@@ -85,8 +100,8 @@ function update_view() {
 }
 //Update where the viewer is pointed
 update_view();
-//Wait a half second or so to allow the screen to actually update
-wait_till_next_tick(500/1000);
+
+wait_till_next_tick();
 
 while (true) {
     update_view();
@@ -124,5 +139,5 @@ while (true) {
         sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
     //Always tick at least once a second to prevent large jumps of background.
-    wait_till_next_tick((time_left/1000)%1000);
+    wait_till_next_tick();
 }
