@@ -190,7 +190,8 @@ EOF
 #0 2 * * * /sbin/reboot
 
 #Set LED Screen & Stellarium to autostart
-sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
+#sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
+sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
 @xset s off     # do not activate screensaver\
 @xset -dpms     # disable DPMS (Energy Star) features.\
 @xset s noblank # do not blank the video device\
