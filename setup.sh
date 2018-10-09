@@ -134,6 +134,9 @@ sudo apt-get install -y lightdm
 #(Optional minimal GUI)
 #sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
 
+#Install VNC
+#sudo apt-get install -y realvnc-vnc-server
+
 #Install stellarium 
 sudo apt-get install -y stellarium
 
