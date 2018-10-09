@@ -193,10 +193,18 @@ EOF
 #0 2 * * * /sbin/reboot
 
 #Set LED Screen & Stellarium to autostart
+cat <<EOF | tee /home/pi/.config/lxsession/LXDE-pi/autostart
+sudo /home/pi/rpi-fb-matrix/rpi-fb-matrix --led-chain=2 --led-daemon
+@xset s off     # do not activate screensaver
+@xset -dpms     # disable DPMS (Energy Star) features.
+@xset s noblank # do not blank the video device
+stellarium --startup-script=clock.ssc
+@xscreensaver
+EOF
 #sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
-sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
-@xset s off     # do not activate screensaver\
-@xset -dpms     # disable DPMS (Energy Star) features.\
-@xset s noblank # do not blank the video device\
-stellarium --startup-script=clock.ssc\
-@xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
+#sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
+#@xset s off     # do not activate screensaver\
+#@xset -dpms     # disable DPMS (Energy Star) features.\
+#@xset s noblank # do not blank the video device\
+#stellarium --startup-script=clock.ssc\
+#@xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
