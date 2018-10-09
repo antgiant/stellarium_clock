@@ -150,7 +150,7 @@ sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 7638D0442B90D010
 sudo apt-get update
 
 #----------------------------------------------
-#sudo apt-get install --only-upgrade stellarium
+sudo apt-get install --only-upgrade stellarium
 #sudo apt-get install stellarium
 #----------------------------------------------
 
