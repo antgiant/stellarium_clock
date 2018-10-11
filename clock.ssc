@@ -14,12 +14,15 @@ include("suncalc.js");
 
 visible = true;
 invisible = false;
-v_fov = 20;
+v_fov = 30;
 h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration of 2:1
 displayed_time = "";
 tock = true;
 
 //     core.debug('h_fov = ' + h_fov);
+
+//Nice flat horizon
+core.setProjectionMode("ProjectionPerspective");
 
 //Hide things
 core.setGuiVisible(invisible);
@@ -96,7 +99,7 @@ function update_view() {
     StelMovementMgr.setViewportVerticalOffsetTarget(0);
 
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
-    core.moveToAltAzi(7, sun["azimuth"], 0);
+    core.moveToAltAzi(10, sun["azimuth"], 0);
 }
 //Update where the viewer is pointed
 update_view();
