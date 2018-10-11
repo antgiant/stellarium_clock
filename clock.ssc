@@ -27,6 +27,9 @@ core.setProjectionMode("ProjectionPerspective");
 //Hide things
 core.setGuiVisible(invisible);
 try {
+    LandscapeMgr.setFlagIllumination(false);
+    LandscapeMgr.setFlagLabels(false);
+    LandscapeMgr.setFlagCardinalsPoints(false);
     MeteorShowers.setEnableLabels(false);
     Satellites.setFlagLabels(false);
 } catch(e) {/*Ignore Failure*/}
