@@ -4,6 +4,7 @@
 //
 
 /* @ToDo
+ * Update atmosphereic conditions based on actual weather conditions. 
  * Color Theme Changes for Special Dates
  * Rain notification
  * Jacket notification
@@ -96,6 +97,15 @@ function update_view() {
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
 
+/*    StelSkyDrawer.setExtinctionCoefficient (double extCoeff)
+ 	Set extinction coefficient, mag/airmass (for extinction).
+ 
+    StelSkyDrawer.setAtmosphereTemperature (double celsius)
+ 	Set atmospheric (ground) temperature in deg celsius (for refraction).
+ 
+    StelSkyDrawer.setAtmospherePressure (double mbar)
+    Get atmospheric (ground) pressure in mbar (for refraction)
+*/
     viewport_offset = 50 - (((sun["azimuth"] - sunrise_max)/max_azimuth_range)*100);
 //    core.debug('viewport_offset = ' + viewport_offset);
     StelMovementMgr.setViewportHorizontalOffsetTarget(viewport_offset);
