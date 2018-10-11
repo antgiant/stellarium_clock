@@ -140,17 +140,17 @@ while (true) {
         }
         displayed_time = get_display_time();
     }
+    if (typeof sunset_countdown !== 'undefined') {
+        LabelMgr.deleteLabel(sunset_countdown);
+    }
     if (seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
-        if (typeof sunset_countdown !== 'undefined') {
-            LabelMgr.deleteLabel(sunset_countdown);
-        }
         time_left = 800 - (new Date).getMilliseconds();
         sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
+    if (typeof sunrise_countdown !== 'undefined') {
+        LabelMgr.deleteLabel(sunrise_countdown);
+    }
     if (seconds_till_sunrise > 0 && seconds_till_sunrise < 60*60) {
-        if (typeof sunrise_countdown !== 'undefined') {
-            LabelMgr.deleteLabel(sunrise_countdown);
-        }
         time_left = 800 - (new Date).getMilliseconds();
         sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, time_left);
     } 
