@@ -91,16 +91,17 @@ function wait_till_next_tick() {
     //Wait is relative to Sim Time not Real time, try and tick exactly on the second.
     if (Math.round(core.getTimeRate()) == 0) {
         //Sim Time frozen. Resort to 1 second waits.
-        core.debug((tock?"Tock ":"Tick ")+
+        /*core.debug((tock?"Tock ":"Tick ")+
         "Next "+(!tock?"Tock ":"Tick ")+" in 1 second (Time Currently Paused)");
+        */
         core.wait(1);
     } else {
         wait_len = Math.abs((1*core.getTimeRate())/(core.getTimeRate()<=18 && core.getTimeRate()>=-18?core.getTimeRate():18));
         tock = !tock;
-        core.debug((tock?"Tock ":"Tick ")+
+        /*core.debug((tock?"Tock ":"Tick ")+
                 "Next "+(!tock?"Tock ":"Tick ")+" in "+(core.getTimeRate()<0?"- ":"+ ")+wait_len+' "seconds" '+
                 'at roughly '+Math.abs(core.getTimeRate()<=18 && core.getTimeRate()>=-18?core.getTimeRate():18)+" fps");
-
+*/
         core.waitFor((core.getTimeRate()<0?"- ":"+ ")+wait_len+" seconds", "utc");
     }
 }
