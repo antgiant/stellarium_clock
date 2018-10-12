@@ -43,6 +43,8 @@ StelMovementMgr.setMaxFov(v_fov);
 
 //Setup Sun Tracking
 core.selectObjectByName("Sun", false);
+sun = core.getSelectedObjectInfo();
+
 //StelMovementMgr.setFlagTracking(true);
 //Find the furthest east and west the sun will go while visible.
 //https://astronomy.stackexchange.com/questions/24598/how-to-calculate-the-maximum-and-minimum-solar-azimuth-at-a-given-location
@@ -73,6 +75,16 @@ function get_display_time() {
     seconds = current_time.getSeconds();
     display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
     return display_time;
+}
+
+function get_display_color() {
+    current_time = new Date;
+
+    if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
+        return "#FFFFFF";
+    } else {
+        return "#1E73BE";
+    }
 }
 
 function wait_till_next_tick() {
@@ -126,18 +138,12 @@ while (true) {
     seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
     seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
     if (displayed_time != get_display_time()) {
-        if (typeof time_day !== 'undefined') {
-            LabelMgr.deleteLabel(time_day);
-        }
-        if (typeof time_night !== 'undefined') {
-            LabelMgr.deleteLabel(time_night);
+        if (typeof time_display !== 'undefined') {
+            LabelMgr.deleteLabel(time_display);
         }
         time_left = 60500 - ((new Date).getSeconds()*1000) - (new Date).getMilliseconds();
-        if (sun["altitude"] > -6) { //-6 is end of Civil Twilight
-            time_day = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#FFFFFF", true, time_left);
-        } else {
-            time_night = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, "#1E73BE", true, time_left);
-        }
+        time_display = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, get_display_color(), true, time_left);
+        
         displayed_time = get_display_time();
     }
     if (typeof sunset_countdown !== 'undefined') {
@@ -145,14 +151,14 @@ while (true) {
     }
     if (seconds_till_sunset > 0 && seconds_till_sunset < 60*60) {
         time_left = 800 - (new Date).getMilliseconds();
-        sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, "#FFFFFF", true, time_left);
+        sunset_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunset/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 0, 300, visible, 72, get_display_color(), true, time_left);
     } 
     if (typeof sunrise_countdown !== 'undefined') {
         LabelMgr.deleteLabel(sunrise_countdown);
     }
     if (seconds_till_sunrise > 0 && seconds_till_sunrise < 60*60) {
         time_left = 800 - (new Date).getMilliseconds();
-        sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, "#FFFFFF", true, time_left);
+        sunrise_countdown = LabelMgr.labelScreen(Math.floor(seconds_till_sunrise/60)+":"+((seconds_till_sunset % 60)<10?"0":"")+(seconds_till_sunset % 60), 600, 300, visible, 72, get_display_color(), true, time_left);
     } 
     //Always tick at least once a second to prevent large jumps of background.
     wait_till_next_tick();
