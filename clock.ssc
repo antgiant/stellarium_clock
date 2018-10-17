@@ -5,7 +5,6 @@
 
 /* @ToDo
  * Update atmosphereic conditions based on actual weather conditions. 
- * Color Theme Changes for Special Dates
  * Rain notification
  * Jacket notification
  */
@@ -88,13 +87,24 @@ function get_display_time() {
 
 function get_display_color() {
     current_time = new Date;
-
-    if (sun["altitude"] > 0) {
-        return color_fade("#1E73BE", "#000000", sun["altitude"]/90);
-    } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
-        return color_fade("#FFFFFF", "#1E73BE", (-sun["altitude"])/18);
-    } else {
-        return "#1E73BE";
+    current_month = current_time.getMonth() + 1;
+    
+    if (current_month == 12) { //Christmas Colors
+        if (sun["altitude"] > 0) {
+            return color_fade("#B3000C", "#0D5901", sun["altitude"]/90);
+        } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
+            return color_fade("#00B32C", "#B3000C", (-sun["altitude"])/18);
+        } else {
+            return "#B3000C";
+        }
+    } else { //"Standard" Colors
+        if (sun["altitude"] > 0) {
+            return color_fade("#1E73BE", "#000000", sun["altitude"]/90);
+        } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
+            return color_fade("#FFFFFF", "#1E73BE", (-sun["altitude"])/18);
+        } else {
+            return "#1E73BE";
+        }
     }
 }
 
