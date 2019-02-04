@@ -186,7 +186,7 @@ EOF
 (crontab -l ; echo "0 1 * * * git -C ~/.stellarium/scripts/ pull")| crontab -
 
 #Restart Stellarium within 5 minutes if it crashes
-(crontab -l ; echo "*/5 * * * * if ! pgrep -x \"stellarium\" > /dev/null; then (env DISPLAY=:0 XAUTHORITY=/home/pi/.Xauthority; stellarium --startup-script=clock.ssc;); disown; fi;")| crontab -
+(crontab -l ; echo "*/5 * * * * if ! pgrep -x \"stellarium\" > /dev/null; then (env DISPLAY=:0 XAUTHORITY=/home/pi/.Xauthority stellarium --startup-script=clock.ssc &); fi;")| crontab -
 
 #crontab -e
 #0 1 * * * git -C ~/.stellarium/scripts/ pull
