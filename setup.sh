@@ -134,9 +134,6 @@ sudo apt-get install -y lightdm
 #(Optional minimal GUI)
 #sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
 
-#Install VNC
-#sudo apt-get install -y realvnc-vnc-server
-
 #Install stellarium 
 sudo apt-get install -y stellarium
 
@@ -153,7 +150,7 @@ sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 7638D0442B90D010
 sudo apt-get update
 
 #----------------------------------------------
-sudo apt-get install -y --only-upgrade stellarium
+#sudo apt-get install --only-upgrade stellarium
 #sudo apt-get install stellarium
 #----------------------------------------------
 
@@ -192,19 +189,16 @@ EOF
 #sudo crontab -e
 #0 2 * * * /sbin/reboot
 
+#Create custom autostart file
+cd /etc/xdg/
+cp --parents lxsession/LXDE-pi/autostart ~/.config
+cd ~/
+
 #Set LED Screen & Stellarium to autostart
-cat <<EOF | tee /home/pi/.config/lxsession/LXDE-pi/autostart
-sudo /home/pi/rpi-fb-matrix/rpi-fb-matrix --led-chain=2 --led-daemon
-@xset s off     # do not activate screensaver
-@xset -dpms     # disable DPMS (Energy Star) features.
-@xset s noblank # do not blank the video device
-stellarium --startup-script=clock.ssc
-@xscreensaver
-EOF
 #sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
-#sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
-#@xset s off     # do not activate screensaver\
-#@xset -dpms     # disable DPMS (Energy Star) features.\
-#@xset s noblank # do not blank the video device\
-#stellarium --startup-script=clock.ssc\
-#@xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
+sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
+@xset s off     # do not activate screensaver\
+@xset -dpms     # disable DPMS (Energy Star) features.\
+@xset s noblank # do not blank the video device\
+stellarium --startup-script=clock.ssc\
+@xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
