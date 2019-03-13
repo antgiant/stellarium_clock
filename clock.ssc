@@ -204,7 +204,7 @@ while (true) {
             } else {
                 sun_phase = "☀";
             }
-            sunrise_countdown = LabelMgr.labelScreen(sun_phase, 0, 300, visible, 72, "#EEE4A7", true, time_left);
+            sunrise_countdown = LabelMgr.labelScreen(sun_phase, 600, 300, visible, 72, "#EEE4A7", true, time_left);
         } 
     }
     //Always tick at least once a second to prevent large jumps of background.
