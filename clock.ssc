@@ -170,16 +170,14 @@ while (true) {
         if (typeof sunset_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunset_countdown);
         }
-        if (seconds_till_sunset > 0 && seconds_till_sunset < 30*60) {
-            if (Math.floor(seconds_till_sunset/60) > 25) {
-                sun_phase = "☀";
-            } else if (Math.floor(seconds_till_sunset/60) > 20) {
+        if (seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) {
+            if (Math.floor(seconds_till_sunset/60) > 12) {
                 sun_phase = "🌑";
-            } else if (Math.floor(seconds_till_sunset/60) > 15) {
+            } else if (Math.floor(seconds_till_sunset/60) > 9) {
                 sun_phase = "🌒";
-            } else if (Math.floor(seconds_till_sunset/60) > 10) {
+            } else if (Math.floor(seconds_till_sunset/60) > 6) {
                 sun_phase = "🌓";
-            } else if (Math.floor(seconds_till_sunset/60) > 5) {
+            } else if (Math.floor(seconds_till_sunset/60) > 3) {
                 sun_phase = "🌔";
             } else {
                 sun_phase = "🌕";
@@ -190,19 +188,17 @@ while (true) {
         if (typeof sunrise_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunrise_countdown);
         }
-        if (seconds_till_sunrise > 0 && seconds_till_sunrise < 30*60) {
-            if (Math.floor(seconds_till_sunrise/60) > 25) {
+        if (seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) {
+            if (Math.floor(seconds_till_sunrise/60) > 12) {
                 sun_phase = "🌕";
-            } else if (Math.floor(seconds_till_sunrise/60) > 20) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 9) {
                 sun_phase = "🌖";
-            } else if (Math.floor(seconds_till_sunrise/60) > 15) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 6) {
                 sun_phase = "🌗";
-            } else if (Math.floor(seconds_till_sunrise/60) > 10) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 3) {
                 sun_phase = "🌘";
-            } else if (Math.floor(seconds_till_sunrise/60) > 5) {
-                sun_phase = "🌑";
             } else {
-                sun_phase = "☀";
+                sun_phase = "🌑";
             }
             sunrise_countdown = LabelMgr.labelScreen(sun_phase, 600, 300, visible, 72, "#EEE4A7", true, time_left);
         } 
