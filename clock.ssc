@@ -127,6 +127,18 @@ function wait_till_next_tick() {
     }
 }
 
+function get_twilight_icon() {
+    if (sun["altitude"] >= -6 && sun["altitude"] < -0.833) { //-6 is the marker for Civil Twilight
+        return "🏘";
+    } else if (sun["altitude"] >= -12 && sun["altitude"] < -6) { //-12 is the marker for Nautical Twilight
+        return "⚓";
+    } else if (sun["altitude"] >= -18 && sun["altitude"] < -12) { //-18 is the marker for Astronomical Twilight
+        return "✨";
+    } else {
+        return "";
+    }
+}
+
 function update_view() {
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
@@ -166,50 +178,62 @@ while (true) {
         
         displayed_time = get_display_time();
 
-        seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-        if (typeof sunset_countdown !== 'undefined') {
-            LabelMgr.deleteLabel(sunset_countdown);
-        }
-        if (seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) {
-            if (Math.floor(seconds_till_sunset/60) > 12) {
-                sun_phase = "🌑";
-            } else if (Math.floor(seconds_till_sunset/60) > 9) {
-                sun_phase = "🌒";
-            } else if (Math.floor(seconds_till_sunset/60) > 6) {
-                sun_phase = "🌓";
-            } else if (Math.floor(seconds_till_sunset/60) > 3) {
-                sun_phase = "🌔";
-            } else {
-                sun_phase = "🌕";
-            }
-            sunset_countdown = LabelMgr.labelScreen(sun_phase, 0, 300, visible, 72, "#EEE4A7", true, time_left);
-        } 
         seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
         if (typeof sunrise_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunrise_countdown);
         }
-        if (seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) {
+        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) || (sun["azimuth"] < 180 && (sun["altitude"] < -0.833 && sun["altitude"] >= -18))) {
+            seconds_till_sunrise = (seconds_till_sunrise <= 15*60 ? seconds_till_sunrise : -1); 
             if (Math.floor(seconds_till_sunrise/60) > 12) {
-                sun_phase = "🌕";
+                icon = "🌕";
+                icon_color = "#EEE4A7";
             } else if (Math.floor(seconds_till_sunrise/60) > 9) {
-                sun_phase = "🌖";
+                icon = "🌖";
+                icon_color = "#EEE4A7";
             } else if (Math.floor(seconds_till_sunrise/60) > 6) {
-                sun_phase = "🌗";
+                icon = "🌗";
+                icon_color = "#EEE4A7";
             } else if (Math.floor(seconds_till_sunrise/60) > 3) {
-                sun_phase = "🌘";
+                icon = "🌘";
+                icon_color = "#EEE4A7";
+            } else if (Math.floor(seconds_till_sunrise/60) > 0){
+                icon = "🌑";
+                icon_color = "#EEE4A7";
             } else {
-                sun_phase = "🌑";
+                icon = get_twilight_icon();
+                icon_color = get_display_color();
             }
-            sunrise_countdown = LabelMgr.labelScreen(sun_phase, 600, 300, visible, 72, "#EEE4A7", true, time_left);
+            sunrise_countdown = LabelMgr.labelScreen(icon, 600, 300, visible, 72, icon_color, true, time_left);
         }
 
-        if (sun["altitude"] >= -6 && sun["altitude"] < -0.833) { //-6 is the marker for Civil Twilight
-            twilight_indicator = LabelMgr.labelScreen("🏘", 20, 5, visible, 50, "#EEE4A7", true, time_left);
-        } else if (sun["altitude"] >= -12 && sun["altitude"] < -6) { //-12 is the marker for Nautical Twilight
-            twilight_indicator = LabelMgr.labelScreen("⚓", 20, 5, visible, 50, "#EEE4A7", true, time_left);
-        } else if (sun["altitude"] >= -18 && sun["altitude"] < -12) { //-18 is the marker for Astronomical Twilight
-            twilight_indicator = LabelMgr.labelScreen("⭐", 20, 5, visible, 50, "#EEE4A7", true, time_left);
+        seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+        if (typeof sunset_countdown !== 'undefined') {
+            LabelMgr.deleteLabel(sunset_countdown);
         }
+        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) || (sun["azimuth"] > 180 && (sun["altitude"] < -0.833 && sun["altitude"] >= -18))) {
+            seconds_till_sunset = (seconds_till_sunset <= 15*60 ? seconds_till_sunset : -1);
+            if (Math.floor(seconds_till_sunset/60) > 12) {
+                icon = "🌑";
+                icon_color = "#EEE4A7";
+            } else if (Math.floor(seconds_till_sunset/60) > 9) {
+                icon = "🌒";
+                icon_color = "#EEE4A7";
+            } else if (Math.floor(seconds_till_sunset/60) > 6) {
+                icon = "🌓";
+                icon_color = "#EEE4A7";
+            } else if (Math.floor(seconds_till_sunset/60) > 3) {
+                icon = "🌔";
+                icon_color = "#EEE4A7";
+            } else if (Math.floor(seconds_till_sunset/60) > 0) {
+                icon = "🌕";
+                icon_color = "#EEE4A7";
+            } else {
+                icon = get_twilight_icon();
+                icon_color = get_display_color();
+            }
+            sunset_countdown = LabelMgr.labelScreen(icon, 0, 300, visible, 72, icon_color, true, time_left);
+        } 
+
     }
     //Always tick at least once a second to prevent large jumps of background.
     wait_till_next_tick();
