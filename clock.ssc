@@ -5,8 +5,8 @@
 
 /* @ToDo
  * Update atmosphereic conditions based on actual weather conditions. 
- * Rain notification
- * Jacket notification
+ * Rain notification (☂) @ 80%
+ * Jacket notification (🧥) @ 50°
  */
 
 include("location.js"); 
