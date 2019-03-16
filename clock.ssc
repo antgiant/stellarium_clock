@@ -201,7 +201,15 @@ while (true) {
                 sun_phase = "🌑";
             }
             sunrise_countdown = LabelMgr.labelScreen(sun_phase, 600, 300, visible, 72, "#EEE4A7", true, time_left);
-        } 
+        }
+
+        if (sun["altitude"] >= -6 && sun["altitude"] < -0.833) { //-6 is the marker for Civil Twilight
+            twilight_indicator = LabelMgr.labelScreen("🏘", 20, 5, visible, 50, "#EEE4A7", true, time_left);
+        } else if (sun["altitude"] >= -12 && sun["altitude"] < -6) { //-12 is the marker for Nautical Twilight
+            twilight_indicator = LabelMgr.labelScreen("⚓", 20, 5, visible, 50, "#EEE4A7", true, time_left);
+        } else if (sun["altitude"] >= -18 && sun["altitude"] < -12) { //-18 is the marker for Astronomical Twilight
+            twilight_indicator = LabelMgr.labelScreen("⭐", 20, 5, visible, 50, "#EEE4A7", true, time_left);
+        }
     }
     //Always tick at least once a second to prevent large jumps of background.
     wait_till_next_tick();
