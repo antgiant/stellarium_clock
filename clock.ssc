@@ -129,11 +129,11 @@ function wait_till_next_tick() {
 
 function get_twilight_icon() {
     if (sun["altitude"] >= -6 && sun["altitude"] < -0.833) { //-6 is the marker for Civil Twilight
-        return "🏘";
+        return "💡";
     } else if (sun["altitude"] >= -12 && sun["altitude"] < -6) { //-12 is the marker for Nautical Twilight
         return "⚓";
     } else if (sun["altitude"] >= -18 && sun["altitude"] < -12) { //-18 is the marker for Astronomical Twilight
-        return "✨";
+        return "⭐";
     } else {
         return "";
     }
