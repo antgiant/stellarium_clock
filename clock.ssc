@@ -3,14 +3,15 @@
 // Description: A fullscreen overlay of the current time in the real world.
 //
 
+debug = false;
+
 /* @ToDo
  * Update atmosphereic conditions based on actual weather conditions. 
  * Rain notification (☂) @ 80%
  * Jacket notification (🧥) @ 50°
  */
 
-include("location.js"); 
-include("suncalc.js");
+include("location.js");
 
 visible = true;
 invisible = false;
@@ -36,30 +37,44 @@ try {
 //Set the display options
 core.clear("natural");
 //Setup default view
+if(!debug) {
+    core.setDate("now");
+}
 core.setObserverLocation(lon, lat, alt, 0, place, "");
 StelMovementMgr.setInitFov(v_fov);
 StelMovementMgr.setMaxFov(v_fov);
 
-//Setup Sun Tracking
-core.selectObjectByName("Sun", false);
-sun = core.getSelectedObjectInfo();
+function get_date() {
+    if (debug) {
+        sim = core.getDate("local");
+        temp = new Date();
+        temp.setYear(sim.substring(0,4));
+        temp.setMonth(sim.substring(5,7));
+        temp.setDate(sim.substring(8,10));
+        temp.setHours(sim.substring(11,13));
+        temp.setMinutes(sim.substring(14,16));
+        temp.setSeconds(sim.substring(17,19));
+        return temp;
+    } else {
+        return new Date();
+    }
+}
 
-//StelMovementMgr.setFlagTracking(true);
-//Find the furthest east and west the sun will go while visible.
-//https://astronomy.stackexchange.com/questions/24598/how-to-calculate-the-maximum-and-minimum-solar-azimuth-at-a-given-location
-sunrise_max = 180.0 - degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
-sunset_max = 180.0 + degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
-max_azimuth_range = sunset_max - sunrise_max;
-// core.debug('sunrise_max = ' + sunrise_max);
-// core.debug('sunset_max = ' + sunset_max);
-// core.debug('max_azimuth_range = ' + max_azimuth_range);
+function stellarium_to_javascript_time(sun_time){
+    var t = get_date();  //Assume current date for time
+    t.setHours(sun_time.substring(0,sun_time.indexOf("h")));		//Hours since midnight.
+    t.setMinutes(sun_time.substring(sun_time.indexOf("h") + 1, sun_time.indexOf("m")));		//Minutes after the hour.
+    t.setSeconds(0);		//Seconds after the minute.
 
-//Setup Sunset/Sunrise Countdown
-var suntime = suntimes(90.833);
-// core.debug('sun_declin_deg: ' + suntime.sun_declin_deg);
-// core.debug('solar_noon: ' + suntime.solar_noon);
-// core.debug('sunup: ' + suntime.sunup);
-// core.debug('sundown: ' + suntime.sundown);
+    return t;
+}
+function radians(degrees) {
+    return (Math.PI/180.0)*degrees;
+}
+
+function degrees(radians) {
+    return (180.0/Math.PI)*radians;
+}
 
 //Expects start and end in "web" hex strings (i.e. #FFFFFF)
 //Performs a 1D Linear fade between the two colors.
@@ -71,13 +86,14 @@ function color_fade(start, end, percent) {
 }
 
 function get_display_time() {
-    current_time = new Date;
-    //Update Sunrise/Sunset times after midnight.
-    if (suntime.sundown.getDay() != current_time.getDay()) {
-        suntime = suntimes(90.833);
-    }
-    seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
-    seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+    current_time = get_date();
+    
+    //Setup Sunset/Sunrise Countdown
+    sunup=stellarium_to_javascript_time(sun["rise"]);
+    sundown=stellarium_to_javascript_time(sun["set"]);
+
+    seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor(current_time.getTime()/1000);
+    seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor(current_time.getTime()/1000);
     hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
     minutes = current_time.getMinutes();
     seconds = current_time.getSeconds();
@@ -86,11 +102,11 @@ function get_display_time() {
 }
 
 function get_display_color() {
-    current_time = new Date;
+    current_time = get_date();
     current_month = current_time.getMonth() + 1;
     
     if (current_month == 12) { //Christmas Colors
-        if (sun["altitude"] > -0.833) {
+        if (sun["altitude"] > 0) {
             return color_fade("#B3000C", "#0D5901", sun["altitude"]/90);
         } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
             return color_fade("#00B32C", "#B3000C", (-sun["altitude"])/18);
@@ -98,7 +114,7 @@ function get_display_color() {
             return "#B3000C";
         }
     } else { //"Standard" Colors
-        if (sun["altitude"] > -0.833) {
+        if (sun["altitude"] > 0) {
             return color_fade("#1E73BE", "#000000", sun["altitude"]/90);
         } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
             return color_fade("#FFFFFF", "#1E73BE", (-sun["altitude"])/18);
@@ -128,12 +144,12 @@ function wait_till_next_tick() {
 }
 
 function get_twilight_icon() {
-    if (sun["altitude"] >= -6 && sun["altitude"] < -0.833) { //-6 is the marker for Civil Twilight
-        return "💡";
+    if (sun["altitude"] >= -6 && sun["altitude"] <= 0) { //-6 is the marker for Civil Twilight
+        return "⚫";
     } else if (sun["altitude"] >= -12 && sun["altitude"] < -6) { //-12 is the marker for Nautical Twilight
         return "⚓";
     } else if (sun["altitude"] >= -18 && sun["altitude"] < -12) { //-18 is the marker for Astronomical Twilight
-        return "⭐";
+        return "✴️";
     } else {
         return "";
     }
@@ -160,6 +176,26 @@ function update_view() {
 //    core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
     core.moveToAltAzi(10, sun["azimuth"], 0);
 }
+//Setup Sun Tracking
+core.selectObjectByName("Sun", false);
+sun = core.getSelectedObjectInfo();
+
+//StelMovementMgr.setFlagTracking(true);
+//Find the furthest east and west the sun will go while visible.
+//https://astronomy.stackexchange.com/questions/24598/how-to-calculate-the-maximum-and-minimum-solar-azimuth-at-a-given-location
+sunrise_max = 180.0 - degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
+sunset_max = 180.0 + degrees(Math.acos(-Math.sin(radians(23.5))/Math.cos(radians(lat))));
+max_azimuth_range = sunset_max - sunrise_max;
+// core.debug('sunrise_max = ' + sunrise_max);
+// core.debug('sunset_max = ' + sunset_max);
+// core.debug('max_azimuth_range = ' + max_azimuth_range);
+
+//Setup Sunset/Sunrise Countdown
+sunup=stellarium_to_javascript_time(sun["rise"]);
+sundown=stellarium_to_javascript_time(sun["set"]);
+// core.debug("Rise - " + sunup);
+// core.debug("Set - " + sundown);
+
 //Update where the viewer is pointed
 update_view();
 
@@ -173,16 +209,16 @@ while (true) {
         if (typeof time_display !== 'undefined') {
             LabelMgr.deleteLabel(time_display);
         }
-        time_left = 60500 - ((new Date).getSeconds()*1000) - (new Date).getMilliseconds();
+        time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
         time_display = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 280, get_display_color(), true, time_left);
         
         displayed_time = get_display_time();
 
-        seconds_till_sunrise = Math.floor(suntime.sunup.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+        seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
         if (typeof sunrise_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunrise_countdown);
         }
-        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) || (sun["azimuth"] < 180 && (sun["altitude"] < -0.833 && sun["altitude"] >= -18))) {
+        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
             seconds_till_sunrise = (seconds_till_sunrise <= 15*60 ? seconds_till_sunrise : -1); 
             if (Math.floor(seconds_till_sunrise/60) > 12) {
                 icon = "🌕";
@@ -206,11 +242,11 @@ while (true) {
             sunrise_countdown = LabelMgr.labelScreen(icon, 600, 300, visible, 72, icon_color, true, time_left);
         }
 
-        seconds_till_sunset = Math.floor(suntime.sundown.getTime()/1000)-Math.floor((new Date()).getTime()/1000);
+        seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
         if (typeof sunset_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunset_countdown);
         }
-        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) || (sun["azimuth"] > 180 && (sun["altitude"] < -0.833 && sun["altitude"] >= -18))) {
+        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
             seconds_till_sunset = (seconds_till_sunset <= 15*60 ? seconds_till_sunset : -1);
             if (Math.floor(seconds_till_sunset/60) > 12) {
                 icon = "🌑";
