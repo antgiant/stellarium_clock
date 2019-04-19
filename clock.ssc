@@ -8,7 +8,11 @@ debug = false;
 /* @ToDo
  * Update atmosphereic conditions based on actual weather conditions. 
  * Rain notification (☂) @ 80%
- * Jacket notification (🧥) @ 50°
+ * Jacket notification (☃) @ 50°
+ * Hot notification (♨) @ 90°
+ * Sever Weather Warning (⚡)
+ * All of this should be parseable in the US from 
+ * https://forecast.weather.gov/MapClick.php?lat=[###]&lon=[###]&unit=0&lg=english&FcstType=dwml
  */
 
 include("location.js");
