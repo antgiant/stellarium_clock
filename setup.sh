@@ -212,3 +212,14 @@ sed -i -e 's/@xscreensaver/@xset s off     # do not activate screensaver\
 @xset -dpms     # disable DPMS (Energy Star) features.\
 @xset s noblank # do not blank the video device\
 @xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
+
+: <<'END'
+#Auto join any open wireless network
+cat <<EOF | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+
+network={
+        key_mgmt=NONE
+        priority=0
+}
+EOF
+END
