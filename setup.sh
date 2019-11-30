@@ -135,7 +135,7 @@ sudo apt-get install -y lightdm
 #sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
 
 #Install stellarium 
-sudo apt-get install -y stellarium
+sudo apt-get install -y stellarium leafpad
 
 #Update to version in Debian Repo
 #Add Debian Mirrors (From <https://packages.debian.org/sid/armhf/stellarium/download>)
@@ -176,6 +176,7 @@ lon = $lon;
 alt = $alt;
 place = "$place";
 EOF
+ln ~./stellarium/scripts/location.js ~/Desktop/location.txt
 #nano location.js
 #Add required data
 
