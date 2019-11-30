@@ -185,11 +185,18 @@ EOF
 #Restart Stellarium within 5 minutes if it crashes
 (crontab -l ; echo "*/5 * * * * if ! pgrep -x \"stellarium\" > /dev/null; then (env DISPLAY=:0 XAUTHORITY=/home/pi/.Xauthority stellarium --startup-script=clock.ssc &); fi;")| crontab -
 
+#Start Stellarium at boot
+(crontab -l ; echo "@reboot (env DISPLAY=:0 XAUTHORITY=/home/pi/.Xauthority stellarium --startup-script=clock.ssc &);")| crontab -
+
 #crontab -e
 #0 1 * * * git -C ~/.stellarium/scripts/ pull
 
 #Set system to reboot once a day at 2 am just for good measure
 (sudo crontab -l ; echo "0 2 * * * /sbin/reboot")| sudo crontab -
+
+#Start LED Panel at boot
+(sudo crontab -l ; echo "@reboot /home/pi/rpi-fb-matrix/rpi-fb-matrix --led-chain=2 --led-daemon")| sudo crontab -
+
 #sudo crontab -e
 #0 2 * * * /sbin/reboot
 
@@ -200,9 +207,7 @@ cd ~/
 
 #Set LED Screen & Stellarium to autostart
 #sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-brightness=100 --led-daemon --led-pwm-dither-bits=1\
-sed -i -e 's/@xscreensaver/sudo \/home\/pi\/rpi-fb-matrix\/rpi-fb-matrix --led-chain=2 --led-daemon\
-@xset s off     # do not activate screensaver\
+sed -i -e 's/@xscreensaver/@xset s off     # do not activate screensaver\
 @xset -dpms     # disable DPMS (Energy Star) features.\
 @xset s noblank # do not blank the video device\
-stellarium --startup-script=clock.ssc\
 @xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
