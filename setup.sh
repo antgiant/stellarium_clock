@@ -134,7 +134,7 @@ sudo update-initramfs -u
 #sudo apt-get install -y lightdm
 
 #(Optional minimal GUI)
-sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxsession
+sudo apt-get install -y --no-install-recommends raspberrypi-ui-mods lxsession xscreensaver
 
 #Install stellarium 
 sudo apt-get install -y stellarium leafpad
