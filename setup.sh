@@ -12,7 +12,6 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'Local DNS Server for ZeroTier forwarded traffic (Leave blank to skip): ' zerotier_dns_server
     read -p 'Route all traffic through ZeroTier? (y/N) ' zerotier_full_tunnel
 fi
-read -p 'Auto join any open wireless network? (y/N)' auto_wireless
 read -p 'Install realtime clock support from Adafruit hat? (y/N)' install_rtc
 
 #Install LED Panel Prereqs
@@ -215,17 +214,6 @@ sed -i -e 's/@xscreensaver/@xset s off     # do not activate screensaver\
 @xset s noblank # do not blank the video device\
 @xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
 
-if [ "$auto_wireless" != "${auto_wireless#[Yy]}" ] ;then
-    #Auto join any open wireless network
-    cat <<EOF | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
-
-network={
-        key_mgmt=NONE
-        priority=0
-}
-EOF
-fi
-
 if [ "$install_rtc" != "${install_rtc#[Yy]}" ] ;then
 	# Enable I2C for RTC
 	raspi-config nonint do_i2c 0
@@ -235,3 +223,24 @@ if [ "$install_rtc" != "${install_rtc#[Yy]}" ] ;then
 	update-rc.d -f fake-hwclock remove
 	sudo sed --in-place '/if \[ -e \/run\/systemd\/system \] ; then/,+2 s/^#*/#/' /lib/udev/hwclock-set
 fi
+
+#Add comitup to enable headless wireless setup
+#Add Comitup to sources list (From <https://davesteele.github.io/comitup/ppa.html>)
+echo "deb http://davesteele.github.io/comitup/repo comitup main" | sudo tee -a /etc/apt/sources.list
+
+#Add missing Keys
+sudo apt-key adv --recv-key --keyserver https://davesteele.github.io/key-366150CE.pub.txt 366150CE
+				 
+#update apt-get & install
+sudo apt-get update
+sudo apt-get install -y comitup
+
+#Additional Comitup cleanup tasks (From <https://github.com/davesteele/comitup/wiki/Installing-Comitup>)
+#Set comitup broadcast SSID to clock 
+sudo sed -i -e 's/# ap_name: comitup-<nn>/ap_name: clock/g' /etc/comitup.conf
+
+#Disable resolved service
+sudo systemctl disable systemd.resolved
+
+#Remove existing Wireless connection info
+sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.old
