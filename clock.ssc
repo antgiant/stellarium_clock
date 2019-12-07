@@ -214,7 +214,7 @@ while (true) {
             LabelMgr.deleteLabel(time_display);
         }
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, (core.getScreenWidth()*0.33), get_display_color(), true, time_left);
+        time_display = LabelMgr.labelScreen(get_display_time(), 0, 0, visible, (core.getScreenWidth()*0.33), get_display_color(), true, time_left);
         
         displayed_time = get_display_time();
 
