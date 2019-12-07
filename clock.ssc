@@ -214,7 +214,7 @@ while (true) {
             LabelMgr.deleteLabel(time_display);
         }
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, 530, get_display_color(), true, time_left);
+        time_display = LabelMgr.labelScreen(get_display_time(), -7, -33, visible, (core.getScreenWidth()*0.33), get_display_color(), true, time_left);
         
         displayed_time = get_display_time();
 
@@ -243,7 +243,7 @@ while (true) {
                 icon = get_twilight_icon();
                 icon_color = get_display_color();
             }
-            sunrise_countdown = LabelMgr.labelScreen(icon, 1410, 585, visible, 144, icon_color, true, time_left);
+            sunrise_countdown = LabelMgr.labelScreen(icon, (core.getScreenWidth()-(core.getScreenWidth()*0.18)), (core.getScreenHeight()*0.70), visible, (core.getScreenWidth()*0.09), icon_color, true, time_left);
         }
 
         seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
@@ -271,7 +271,7 @@ while (true) {
                 icon = get_twilight_icon();
                 icon_color = get_display_color();
             }
-            sunset_countdown = LabelMgr.labelScreen(icon, 0, 585, visible, 144, icon_color, true, time_left);
+            sunset_countdown = LabelMgr.labelScreen(icon, 0, (core.getScreenHeight()*0.70), visible, (core.getScreenWidth()*0.09), icon_color, true, time_left);
         } 
 
     }
