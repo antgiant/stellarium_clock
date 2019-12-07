@@ -12,6 +12,10 @@ if [ "$use_zerotier" != "${use_zerotier#[Yy]}" ] ;then
     read -p 'Local DNS Server for ZeroTier forwarded traffic (Leave blank to skip): ' zerotier_dns_server
     read -p 'Route all traffic through ZeroTier? (y/n) ' zerotier_full_tunnel
 fi
+read -p 'Install realtime clock support from Adafruit hat? (y/N)' REPLY
+if [[ "$REPLY" =~ (yes|y|Y)$ ]]; then
+		INSTALL_RTC=1
+	fi
 
 #Install LED Panel Prereqs
 #Required for installing APT Keys
@@ -213,7 +217,6 @@ sed -i -e 's/@xscreensaver/@xset s off     # do not activate screensaver\
 @xset s noblank # do not blank the video device\
 @xscreensaver/g' /home/pi/.config/lxsession/LXDE-pi/autostart
 
-: <<'END'
 #Auto join any open wireless network
 cat <<EOF | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
 
@@ -222,4 +225,13 @@ network={
         priority=0
 }
 EOF
-END
+
+if [ $INSTALL_RTC -ne 0 ]; then
+	# Enable I2C for RTC
+	raspi-config nonint do_i2c 0
+	# Do additional RTC setup for DS1307
+	reconfig /boot/config.txt "^.*dtoverlay=i2c-rtc.*$" "dtoverlay=i2c-rtc,ds1307"
+	apt-get -y remove fake-hwclock
+	update-rc.d -f fake-hwclock remove
+	sudo sed --in-place '/if \[ -e \/run\/systemd\/system \] ; then/,+2 s/^#*/#/' /lib/udev/hwclock-set
+fi
