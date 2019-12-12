@@ -216,11 +216,11 @@ sed -i -e 's/@xscreensaver/@xset s off     # do not activate screensaver\
 
 if [ "$install_rtc" != "${install_rtc#[Yy]}" ] ;then
 	# Enable I2C for RTC
-	raspi-config nonint do_i2c 0
+	sudo raspi-config nonint do_i2c 0
 	# Do additional RTC setup for DS1307
-	reconfig /boot/config.txt "^.*dtoverlay=i2c-rtc.*$" "dtoverlay=i2c-rtc,ds1307"
-	apt-get -y remove fake-hwclock
-	update-rc.d -f fake-hwclock remove
+    sudo sed -i -e 's/^.*dtoverlay=i2c-rtc.*$/dtoverlay=i2c-rtc,ds1307/g' /boot/config.txt
+	sudo apt-get -y remove fake-hwclock
+	sudo update-rc.d -f fake-hwclock remove
 	sudo sed --in-place '/if \[ -e \/run\/systemd\/system \] ; then/,+2 s/^#*/#/' /lib/udev/hwclock-set
 fi
 
