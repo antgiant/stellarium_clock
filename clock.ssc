@@ -118,9 +118,11 @@ function get_display_time() {
             days=(time_left-(hours=time_left%24))/24;
 
             if (days > 0) {
-                display_time = days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
-            } else {
+                display_time = (days<10?" ":"")+days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+            } else if (hours > 0) {
                 display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes+":"+(seconds<10?"0":"")+seconds;
+            } else {
+                display_time = minutes+":"+(seconds<10?"0":"")+seconds;
             }
         }
     } else {
@@ -240,7 +242,7 @@ while (true) {
     current_display_time = get_display_time();
 
     //Delete no longer displayed time (Doing 1 tick later due to fade.)
-    if (typeof time_display !== 'undefined' && typeof time_display2 !== 'undefined') {
+    if (typeof time_display !== 'undefined' && typeof time_display2 !== 'undefined' && time_display !== time_display2) {
         LabelMgr.deleteLabel(time_display);
         time_display = time_display2;
     }
