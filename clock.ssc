@@ -6,12 +6,12 @@
 debug = false;
 
 /* @ToDo
- * Update atmosphereic conditions based on actual weather conditions. 
+ * Update atmospheric conditions based on actual weather conditions. 
  * Rain notification (☂) @ 80%
  * Jacket notification (☃) @ 50°
  * Hot notification (♨) @ 90°
  * Sever Weather Warning (⚡)
- * All of this should be parseable in the US from 
+ * All of this should be parsable in the US from 
  * https://forecast.weather.gov/MapClick.php?lat=[###]&lon=[###]&unit=0&lg=english&FcstType=dwml
  */
 
@@ -20,7 +20,7 @@ include("location.js");
 visible = true;
 invisible = false;
 v_fov = 30;
-h_fov = v_fov*1.75; //Estimating Horizontial FOV. Assumes screen aspect ration of 2:1
+h_fov = v_fov*1.75; //Estimating Horizontal FOV. Assumes screen aspect ration of 2:1
 displayed_time = "";
 tock = true;
 
@@ -98,10 +98,31 @@ function get_display_time() {
 
     seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor(current_time.getTime()/1000);
     seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor(current_time.getTime()/1000);
-    hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
-    minutes = current_time.getMinutes();
-    seconds = current_time.getSeconds();
-    display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+
+    today = get_date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    if (typeof countdown !== 'undefined' && countdown.getTime() > today.getTime()) {
+        temp = get_date();
+        time_left = countdown - temp;
+
+        time_left=(time_left-(milliseconds=time_left%1000))/1000;
+        time_left=(time_left-(seconds=time_left%60))/60;
+        time_left=(time_left-(minutes=time_left%60))/60;
+        days=(time_left-(hours=time_left%24))/24;
+
+        if (days > 0) {
+            display_time = days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+        } else {
+            display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes+":"+(seconds<10?"0":"")+seconds;
+        }
+    } else {
+        hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
+        minutes = current_time.getMinutes();
+        seconds = current_time.getSeconds();
+        display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+    }    
     return display_time;
 }
 
@@ -209,14 +230,15 @@ while (true) {
     update_view();
     //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-    if (displayed_time != get_display_time()) {
+    current_time = get_display_time();
+    if (displayed_time != current_time) {
         if (typeof time_display !== 'undefined') {
             LabelMgr.deleteLabel(time_display);
         }
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display = LabelMgr.labelScreen(get_display_time(), 0, 0, visible, (core.getScreenWidth()*0.33), get_display_color(), true, time_left);
+        time_display = LabelMgr.labelScreen(current_time, 0, 0, visible, (core.getScreenWidth()*(current_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
         
-        displayed_time = get_display_time();
+        displayed_time = current_time;
 
         seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
         if (typeof sunrise_countdown !== 'undefined') {
