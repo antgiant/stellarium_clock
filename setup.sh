@@ -88,7 +88,7 @@ sudo apt-get install -y git build-essential libconfig++-dev
 
 git clone --recursive https://github.com/antgiant/rpi-fb-matrix.git
 cd rpi-fb-matrix/rpi-rgb-led-matrix/
-git checkout master
+#git checkout master
 git pull
 cd ..
 sudo sed -i -e 's/HARDWARE_DESC=adafruit-hat/HARDWARE_DESC=adafruit-hat-pwm/g' ~/rpi-fb-matrix/Makefile
