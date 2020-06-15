@@ -251,6 +251,8 @@ while (true) {
         //Hide old time (Doing early due to fade)
         if (typeof time_display !== 'undefined') {
             LabelMgr.setLabelShow(time_display, false);
+        } else {
+            time_display = "";
         }
 
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
