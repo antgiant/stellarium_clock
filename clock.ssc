@@ -99,30 +99,37 @@ function get_display_time() {
     seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor(current_time.getTime()/1000);
     seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor(current_time.getTime()/1000);
 
-    today = get_date();
-    today.setHours(0);
-    today.setMinutes(0);
-    today.setSeconds(0);
-    if (typeof countdown !== 'undefined' && countdown.getTime() > today.getTime()) {
+    start_of_today = get_date();
+    start_of_today.setHours(0, 0, 0);
+    if (typeof countdown !== 'undefined' && countdown.getTime() > start_of_today.getTime()) {
         temp = get_date();
-        time_left = countdown - temp;
+        time_left = countdown.getTime() - temp.getTime();
 
-        time_left=(time_left-(milliseconds=time_left%1000))/1000;
-        time_left=(time_left-(seconds=time_left%60))/60;
-        time_left=(time_left-(minutes=time_left%60))/60;
-        days=(time_left-(hours=time_left%24))/24;
-
-        if (days > 0) {
-            display_time = days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+        if (time_left < 0) {
+            if (temp.getSeconds() == 00) {
+                display_time = "00:00:00 ";
+            } else {
+                display_time = "00:00:00";
+            }
         } else {
-            display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes+":"+(seconds<10?"0":"")+seconds;
+            time_left=(time_left-(milliseconds=time_left%1000))/1000;
+            time_left=(time_left-(seconds=time_left%60))/60;
+            time_left=(time_left-(minutes=time_left%60))/60;
+            days=(time_left-(hours=time_left%24))/24;
+
+            if (days > 0) {
+                display_time = days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+            } else {
+                display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes+":"+(seconds<10?"0":"")+seconds;
+            }
         }
     } else {
         hours = (current_time.getHours()>12?current_time.getHours() - 12: current_time.getHours());
         minutes = current_time.getMinutes();
         seconds = current_time.getSeconds();
         display_time = (hours<10?(hours==0?"12":" "+hours):hours)+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
-    }    
+    }
+//    core.debug(display_time);
     return display_time;
 }
 
@@ -230,15 +237,15 @@ while (true) {
     update_view();
     //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
-    current_time = get_display_time();
-    if (displayed_time != current_time) {
+    current_display_time = get_display_time();
+    if (displayed_time != current_display_time) {
         if (typeof time_display !== 'undefined') {
             LabelMgr.deleteLabel(time_display);
         }
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display = LabelMgr.labelScreen(current_time, 0, 0, visible, (core.getScreenWidth()*(current_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
+        time_display = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
         
-        displayed_time = current_time;
+        displayed_time = current_display_time;
 
         seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
         if (typeof sunrise_countdown !== 'undefined') {
