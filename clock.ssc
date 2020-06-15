@@ -256,7 +256,7 @@ while (true) {
         }
 
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display2 = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
+        time_display2 = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:(current_display_time.length == 9?0.18:0.20))), get_display_color(), true, time_left);
 
         displayed_time = current_display_time;
 
