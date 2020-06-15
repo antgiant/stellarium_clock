@@ -238,13 +238,22 @@ while (true) {
     //LabelMgr.labelHorizon("text", Azimuth, Altitude, visibility, font size, color);
     //LabelMgr.labelScreen("text", x, y, visibility, font size, color);
     current_display_time = get_display_time();
+
+    //Delete no longer displayed time (Doing 1 tick later due to fade.)
+    if (typeof time_display !== 'undefined' && typeof time_display2 !== 'undefined') {
+        LabelMgr.deleteLabel(time_display);
+        time_display = time_display2;
+    }
+
     if (displayed_time != current_display_time) {
+        //Hide old time (Doing early due to fade)
         if (typeof time_display !== 'undefined') {
-            LabelMgr.deleteLabel(time_display);
+            LabelMgr.setLabelShow(time_display, false);
         }
+
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
-        
+        time_display2 = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:0.20)), get_display_color(), true, time_left);
+
         displayed_time = current_display_time;
 
         seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
