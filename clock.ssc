@@ -141,6 +141,7 @@ function get_display_time() {
 }
 
 function get_display_color() {
+/*
     current_time = get_date();
     current_month = current_time.getMonth() + 1;
     
@@ -153,6 +154,7 @@ function get_display_color() {
             return "#B3000C";
         }
     } else { //"Standard" Colors
+*/
         if (sun["altitude"] > 0) {
             return color_fade("#1E73BE", "#000000", sun["altitude"]/90);
         } else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
@@ -160,7 +162,7 @@ function get_display_color() {
         } else {
             return "#1E73BE";
         }
-    }
+//    }
 }
 
 function wait_till_next_tick() {
