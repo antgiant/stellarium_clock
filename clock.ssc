@@ -264,18 +264,18 @@ while (true) {
         if (typeof sunrise_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunrise_countdown);
         }
-        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 15*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
-            seconds_till_sunrise = (seconds_till_sunrise <= 15*60 ? seconds_till_sunrise : -1); 
-            if (Math.floor(seconds_till_sunrise/60) > 12) {
+        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 25*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
+            seconds_till_sunrise = (seconds_till_sunrise <= 25*60 ? seconds_till_sunrise : -1); 
+            if (Math.floor(seconds_till_sunrise/60) > 20) {
                 icon = "🌕";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 9) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 15) {
                 icon = "🌖";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 6) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 10) {
                 icon = "🌗";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 3) {
+            } else if (Math.floor(seconds_till_sunrise/60) > 5) {
                 icon = "🌘";
                 icon_color = "#EEE4A7";
             } else if (Math.floor(seconds_till_sunrise/60) > 0){
@@ -292,18 +292,18 @@ while (true) {
         if (typeof sunset_countdown !== 'undefined') {
             LabelMgr.deleteLabel(sunset_countdown);
         }
-        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 15*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
-            seconds_till_sunset = (seconds_till_sunset <= 15*60 ? seconds_till_sunset : -1);
-            if (Math.floor(seconds_till_sunset/60) > 12) {
+        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 25*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
+            seconds_till_sunset = (seconds_till_sunset <= 25*60 ? seconds_till_sunset : -1);
+            if (Math.floor(seconds_till_sunset/60) > 20) {
                 icon = "🌑";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 9) {
+            } else if (Math.floor(seconds_till_sunset/60) > 15) {
                 icon = "🌒";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 6) {
+            } else if (Math.floor(seconds_till_sunset/60) > 10) {
                 icon = "🌓";
                 icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 3) {
+            } else if (Math.floor(seconds_till_sunset/60) > 5) {
                 icon = "🌔";
                 icon_color = "#EEE4A7";
             } else if (Math.floor(seconds_till_sunset/60) > 0) {
