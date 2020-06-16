@@ -106,23 +106,28 @@ function get_display_time() {
         time_left = countdown.getTime() - temp.getTime();
 
         if (time_left < 0) {
-            if (temp.getSeconds() == 00) {
-                display_time = "00:00:00 ";
-            } else {
-                display_time = "00:00:00";
-            }
+            display_time = "00:00";
         } else {
             time_left=(time_left-(milliseconds=time_left%1000))/1000;
             time_left=(time_left-(seconds=time_left%60))/60;
             time_left=(time_left-(minutes=time_left%60))/60;
             days=(time_left-(hours=time_left%24))/24;
 
-            if (days > 0) {
-                display_time = (days<10?" ":"")+days+":"+(hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;//+":"+seconds;
+            if (days.toString().length > 3) {
+                display_time = days.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            } else if (days.toString().length > 2) {
+                days += (hours+(minutes+(seconds+(milliseconds/1000))/60)/60)/24;
+                display_time = days.toFixed(1);
+            } else if (days.toString().length > 1) {
+                days += (hours+(minutes+(seconds+(milliseconds/1000))/60)/60)/24;
+                display_time = days.toFixed(2);
+            } else if (days > 0) {
+                days += (hours+(minutes+(seconds+(milliseconds/1000))/60)/60)/24;
+                display_time = days.toFixed(3);
             } else if (hours > 0) {
-                display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes+":"+(seconds<10?"0":"")+seconds;
+                display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;
             } else {
-                display_time = minutes+":"+(seconds<10?"0":"")+seconds;
+                display_time = (minutes<10?"0":"")+minutes+":"+(seconds==0?"00":(seconds<10?"0":""))+seconds;
             }
         }
     } else {
@@ -256,7 +261,7 @@ while (true) {
         }
 
         time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
-        time_display2 = LabelMgr.labelScreen(current_display_time, 0, (current_display_time.length == 5?0:(current_display_time.length == 9?90:75)), visible, (core.getScreenWidth()*(current_display_time.length == 5?0.33:(current_display_time.length == 9?0.18:0.20))), get_display_color(), true, time_left);
+        time_display2 = LabelMgr.labelScreen(current_display_time, 0, 0, visible, (core.getScreenWidth()*0.33), get_display_color(), true);
 
         displayed_time = current_display_time;
 
