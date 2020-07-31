@@ -112,6 +112,7 @@ function get_display_time() {
             time_left=(time_left-(seconds=time_left%60))/60;
             time_left=(time_left-(minutes=time_left%60))/60;
             days=(time_left-(hours=time_left%24))/24;
+            days_decimal = days + (hours/24) + (minutes/24/60) + (seconds/24/60/60);
 
             if (days.toString().length > 3) {
                 display_time = days.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -121,11 +122,12 @@ function get_display_time() {
             } else if (days.toString().length > 1) {
                 days += (hours+(minutes+(seconds+(milliseconds/1000))/60)/60)/24;
                 display_time = days.toFixed(2);
-            } else if (days > 0) {
+            } else if (days_decimal > 4.166666) {
                 days += (hours+(minutes+(seconds+(milliseconds/1000))/60)/60)/24;
                 display_time = days.toFixed(3);
-            } else if (hours > 0) {
-                display_time = (hours<10?"0":"")+hours+":"+(minutes<10?"0":"")+minutes;
+            } else if (hours > 0 || days > 0) {
+                display_hours = hours + (days*24);
+                display_time = (display_hours<10?"0":"")+display_hours+":"+(minutes<10?"0":"")+minutes;
             } else {
                 display_time = (minutes<10?"0":"")+minutes+":"+(seconds==0?"00":(seconds<10?"0":""))+seconds;
             }
