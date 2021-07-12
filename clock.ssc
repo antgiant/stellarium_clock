@@ -200,6 +200,7 @@ function get_twilight_icon() {
 function update_view() {
     core.selectObjectByName("Sun", false);
     sun = core.getSelectedObjectInfo();
+    core.setSelectedObjectInfo("None");
 
 /*    StelSkyDrawer.setExtinctionCoefficient (double extCoeff)
  	Set extinction coefficient, mag/airmass (for extinction).
