@@ -166,6 +166,39 @@ function get_display_color() {
 //    }
 }
 
+function get_horizon_offset(azimuth) {
+    if (azimuth >= 73 && azimuth < 140) {
+        return 10 + (azimuth - 73)/(140-73);
+    } else if (azimuth >= 140 && azimuth < 170) {
+        return 11 + (azimuth - 140)/(170-140);
+    } else if (azimuth >= 170 && azimuth < 190) {
+        return 12 + (azimuth - 170)/(190-170);
+    } else if (azimuth >= 190 && azimuth < 226) {
+        return 13 + (azimuth - 190)/(226-190);
+    } else if (azimuth >= 226 && azimuth < 230) {
+        return 14 + (azimuth - 226)/(230-226);
+    } else if (azimuth >= 230 && azimuth < 277) {
+        return 15 + (azimuth - 230)/(277-230);
+    } else if (azimuth >= 277 && azimuth < 298) {
+        return 16 + Math.abs((azimuth - 288)/(11));
+    } else if (azimuth >= 298 && azimuth < 302) {
+        return 15 - (azimuth - 298)/(302-298);
+    } else if (azimuth >= 302) {
+        return 14 - ((azimuth - 302)/(360-302)*.5);
+    } else if (azimuth < 40) {
+        return 14 - 0.5 - ((azimuth/40)*.5);
+    } else if (azimuth >= 40 && azimuth < 50) {
+        return 13 - (azimuth - 40)/(50-40);
+    } else if (azimuth >= 50 && azimuth < 60) {
+        return 12 - (azimuth - 50)/(60-50);
+    } else if (azimuth >= 60 && azimuth < 73) {
+        return 11 - (azimuth - 60)/(73-60);
+    } else {
+        return 10;
+    }
+    
+}
+
 function wait_till_next_tick() {
     //Wait is relative to Sim Time not Real time, try and tick exactly on the second.
     if (Math.round(core.getTimeRate()) == 0) {
@@ -219,7 +252,7 @@ function update_view() {
         StelMovementMgr.setViewportVerticalOffsetTarget(0);
 
 //        core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
-        core.moveToAltAzi(10, sun["azimuth"], 0);
+        core.moveToAltAzi(get_horizon_offset(sun["azimuth"]), sun["azimuth"], 0);
     } //Gradually Look to the nearest Pole
     else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
         StelMovementMgr.setViewportHorizontalOffsetTarget(0);
@@ -231,7 +264,7 @@ function update_view() {
             azimuth_view = (lat >= 0?0:180) - ((lat >= 0?0:180) - azimuth_view)*(1 - percent_to_pole);
         }
 
-        core.moveToAltAzi(10, azimuth_view, 0);
+        core.moveToAltAzi(get_horizon_offset(azimuth_view), azimuth_view, 0);
     } else {
         if (lat >= 0) {
             StelMovementMgr.lookNorth(false);
