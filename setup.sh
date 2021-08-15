@@ -177,7 +177,7 @@ lon = $lon;
 alt = $alt;
 place = "$place";
 EOF
-ln ~./stellarium/scripts/location.js ~/Desktop/location.txt
+ln ~/.stellarium/scripts/location.js ~/Desktop/location.txt
 #nano location.js
 #Add required data
 
