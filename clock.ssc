@@ -168,33 +168,33 @@ function get_display_color() {
 
 function get_horizon_offset(azimuth) {
     if (azimuth >= 73 && azimuth < 140) {
-        return 6 + (azimuth - 73)/(140-73);
+        return 5 + (azimuth - 73)/(140-73);
     } else if (azimuth >= 140 && azimuth < 170) {
-        return 7 + (azimuth - 140)/(170-140);
+        return 6 + (azimuth - 140)/(170-140);
     } else if (azimuth >= 170 && azimuth < 190) {
-        return 8 + (azimuth - 170)/(190-170);
+        return 7 + (azimuth - 170)/(190-170);
     } else if (azimuth >= 190 && azimuth < 226) {
-        return 9 + (azimuth - 190)/(226-190);
+        return 8 + (azimuth - 190)/(226-190);
     } else if (azimuth >= 226 && azimuth < 230) {
-        return 10 + (azimuth - 226)/(230-226);
+        return 9 + (azimuth - 226)/(230-226);
     } else if (azimuth >= 230 && azimuth < 277) {
-        return 11 + (azimuth - 230)/(277-230);
+        return 10 + (azimuth - 230)/(277-230);
     } else if (azimuth >= 277 && azimuth < 298) {
-        return 12 + Math.abs((azimuth - 288)/(11));
+        return 11 + Math.abs((azimuth - 288)/(11));
     } else if (azimuth >= 298 && azimuth < 302) {
-        return 11 - (azimuth - 298)/(302-298);
+        return 10 - (azimuth - 298)/(302-298);
     } else if (azimuth >= 302) {
-        return 10 - ((azimuth - 302)/(360-302)*.5);
+        return 9 - ((azimuth - 302)/(360-302)*.5);
     } else if (azimuth < 40) {
-        return 10 - 0.5 - ((azimuth/40)*.5);
+        return 9 - 0.5 - ((azimuth/40)*.5);
     } else if (azimuth >= 40 && azimuth < 50) {
-        return 9 - (azimuth - 40)/(50-40);
+        return 8 - (azimuth - 40)/(50-40);
     } else if (azimuth >= 50 && azimuth < 60) {
-        return 8 - (azimuth - 50)/(60-50);
+        return 7 - (azimuth - 50)/(60-50);
     } else if (azimuth >= 60 && azimuth < 73) {
-        return 7 - (azimuth - 60)/(73-60);
+        return 6 - (azimuth - 60)/(73-60);
     } else {
-        return 6;
+        return 5;
     }
     
 }
