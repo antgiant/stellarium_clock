@@ -247,3 +247,6 @@ sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplica
 
 #Copy background images to where they belong. (But first make sure path is right.)
 #sudo cp -r ~/.stellarium/scripts/usr /
+
+#Hide the mouse cursor
+sudo sed -i -e 's/#xserver-command=X/xserver-command=X -nocursor/g' /etc/lightdm/lightdm.conf
