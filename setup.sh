@@ -237,7 +237,7 @@ sudo apt-get install -y comitup
 
 #Additional Comitup cleanup tasks (From <https://github.com/davesteele/comitup/wiki/Installing-Comitup>)
 #Set comitup broadcast SSID to clock 
-sudo sed -i -e 's/# ap_name: comitup-<nn>/ap_name: clock/g' /etc/comitup.conf
+sudo sed -i -e 's/# ap_name: comitup-<(n)+>/ap_name: clock/g' /etc/comitup.conf
 
 #Disable resolved service
 sudo systemctl disable systemd.resolved
