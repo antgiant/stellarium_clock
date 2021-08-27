@@ -167,34 +167,57 @@ function get_display_color() {
 }
 
 function get_horizon_offset(azimuth) {
+    current_time = get_date();
+
+    //Get Sunset/Sunrise Countdown
+    sunup=stellarium_to_javascript_time(sun["rise"]);
+    sundown=stellarium_to_javascript_time(sun["set"]);
+
+    seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor(current_time.getTime()/1000);
+    seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor(current_time.getTime()/1000);
+
+    offset = 0
+    if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 30*60) || (seconds_till_sunset > 0 && seconds_till_sunset <= 30*60)) {
+        if (seconds_till_sunrise < 25*60 || seconds_till_sunset < 25*60) {
+            offset = 3;
+        } else {
+            //5*60 = 300. Therefore the five minutes/100 will give a range of 0 - 3
+            if (seconds_till_sunrise >= 25*60) {
+                offset = 3 - (seconds_till_sunrise - 25*60)/100.0;
+            } else {
+                offset = 3 - (seconds_till_sunset - 25*60)/100.0;
+            }
+        }
+    }
+
     if (azimuth >= 73 && azimuth < 140) {
-        return 5 + (azimuth - 73)/(140-73);
+        return 8 + (azimuth - 73)/(140-73) - offset;
     } else if (azimuth >= 140 && azimuth < 170) {
-        return 6 + (azimuth - 140)/(170-140);
+        return 9 + (azimuth - 140)/(170-140) - offset;
     } else if (azimuth >= 170 && azimuth < 190) {
-        return 7 + (azimuth - 170)/(190-170);
+        return 10 + (azimuth - 170)/(190-170) - offset;
     } else if (azimuth >= 190 && azimuth < 226) {
-        return 8 + (azimuth - 190)/(226-190);
+        return 11 + (azimuth - 190)/(226-190) - offset;
     } else if (azimuth >= 226 && azimuth < 230) {
-        return 9 + (azimuth - 226)/(230-226);
+        return 12 + (azimuth - 226)/(230-226) - offset;
     } else if (azimuth >= 230 && azimuth < 277) {
-        return 10 + (azimuth - 230)/(277-230);
+        return 13 + (azimuth - 230)/(277-230) - offset;
     } else if (azimuth >= 277 && azimuth < 298) {
-        return 11 + Math.abs((azimuth - 288)/(11));
+        return 14 + Math.abs((azimuth - 288)/(11)) - offset;
     } else if (azimuth >= 298 && azimuth < 302) {
-        return 10 - (azimuth - 298)/(302-298);
+        return 13 - (azimuth - 298)/(302-298) - offset;
     } else if (azimuth >= 302) {
-        return 9 - ((azimuth - 302)/(360-302)*.5);
+        return 12 - ((azimuth - 302)/(360-302)*.5) - offset;
     } else if (azimuth < 40) {
-        return 9 - 0.5 - ((azimuth/40)*.5);
+        return 12 - 0.5 - ((azimuth/40)*.5) - offset;
     } else if (azimuth >= 40 && azimuth < 50) {
-        return 8 - (azimuth - 40)/(50-40);
+        return 11 - (azimuth - 40)/(50-40) - offset;
     } else if (azimuth >= 50 && azimuth < 60) {
-        return 7 - (azimuth - 50)/(60-50);
+        return 10 - (azimuth - 50)/(60-50) - offset;
     } else if (azimuth >= 60 && azimuth < 73) {
-        return 6 - (azimuth - 60)/(73-60);
+        return 9 - (azimuth - 60)/(73-60) - offset;
     } else {
-        return 5;
+        return 8 - offset;
     }
     
 }
