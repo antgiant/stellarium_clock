@@ -178,15 +178,21 @@ function get_horizon_offset(azimuth) {
 
     offset = 0
     if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 30*60) || (seconds_till_sunset > 0 && seconds_till_sunset <= 30*60)) {
-        if (seconds_till_sunrise < 25*60 || seconds_till_sunset < 25*60) {
+        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 25*60) || (seconds_till_sunset > 0 && seconds_till_sunset <= 25*60)) {
             offset = 3;
         } else {
             //5*60 = 300. Therefore the five minutes/100 will give a range of 0 - 3
-            if (seconds_till_sunrise >= 25*60) {
+            if ((seconds_till_sunrise > 0 && seconds_till_sunrise >= 25*60)) {
                 offset = 3 - (seconds_till_sunrise - 25*60)/100.0;
             } else {
                 offset = 3 - (seconds_till_sunset - 25*60)/100.0;
             }
+        }
+    } else if ((seconds_till_sunrise <= 0 && seconds_till_sunrise >= -5*60) || (seconds_till_sunset <= 0 && seconds_till_sunset >= -5*60)) {
+        if (seconds_till_sunrise >= -5*60) {
+            offset = (seconds_till_sunrise + 5*60)/100.0;
+        } else {
+            offset = (seconds_till_sunset + 5*60)/100.0;
         }
     }
 
