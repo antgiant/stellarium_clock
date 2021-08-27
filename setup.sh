@@ -244,3 +244,6 @@ sudo systemctl disable systemd.resolved
 
 #Remove existing Wireless connection info
 sudo mv /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.old
+
+#Copy background images to where they belong. (But first make sure path is right.)
+#sudo cp -r ~/.stellarium/scripts/usr /
