@@ -23,6 +23,10 @@ v_fov = 30;
 h_fov = v_fov*1.75; //Estimating Horizontal FOV. Assumes screen aspect ration of 2:1
 displayed_time = "";
 tock = true;
+if (typeof night_look_direction === 'undefined') {
+    //If undefined look to North Pole in Northern Hemisphere and South Pole in Southern Hemisphere
+    var night_look_direction = (lat >= 0?360:180);
+}
 
 //     core.debug('h_fov = ' + h_fov);
 
@@ -282,24 +286,42 @@ function update_view() {
 
 //        core.moveToAltAzi(sun["altitude"], sun["azimuth"], 0);
         core.moveToAltAzi(get_horizon_offset(sun["azimuth"]), sun["azimuth"], 0);
-    } //Gradually Look to the nearest Pole
+    } //Gradually Look to the nearest Pole (or specified direction)
     else if (sun["altitude"] > -18) { //-18 is the marker for Astronomical Twilight
         StelMovementMgr.setViewportHorizontalOffsetTarget(0);
         azimuth_view = sun["azimuth"] + ((h_fov*((sun["azimuth"] - sunrise_max)/max_azimuth_range)) - (h_fov/2));
-        percent_to_pole = sun["altitude"]/-18.0;
-        if (azimuth_view >= 180) {
-            azimuth_view = (lat >= 0?360:180) - ((lat >= 0?360:180) - azimuth_view)*(1 - percent_to_pole);
+        percent_to_goal = sun["altitude"]/-18.0;
+
+
+        if (azimuth_view < night_look_direction) {
+            if (night_look_direction - azimuth_view <= 180) {
+                move_forward = true;
+                distance_to_move = night_look_direction - azimuth_view;
+            } else {
+                move_forward = false;
+                distance_to_move = (360 - (night_look_direction - azimuth_view));
+            }
+        } else if (azimuth_view > night_look_direction) {
+            if (azimuth_view - night_look_direction <= 180) {
+                move_forward = false;
+                distance_to_move = azimuth_view - night_look_direction;
+            } else {
+                move_forward = true;
+                distance_to_move = (360 - (azimuth_view - night_look_direction));
+            }
         } else {
-            azimuth_view = (lat >= 0?0:180) - ((lat >= 0?0:180) - azimuth_view)*(1 - percent_to_pole);
+            distance_to_move = 0;
+        }
+
+        if (move_forward) {
+            azimuth_view = azimuth_view + (distance_to_move*percent_to_goal);
+        } else {
+            azimuth_view = azimuth_view - (distance_to_move*percent_to_goal);
         }
 
         core.moveToAltAzi(get_horizon_offset(azimuth_view), azimuth_view, 0);
     } else {
-        if (lat >= 0) {
-            StelMovementMgr.lookNorth(false);
-        } else {
-            StelMovementMgr.lookSouth(false);
-        }
+        core.moveToAltAzi(get_horizon_offset(night_look_direction), night_look_direction, 0)
     }
     
 }
