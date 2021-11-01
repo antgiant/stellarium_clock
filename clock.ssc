@@ -392,72 +392,70 @@ while (true) {
             }
         }
 
-        time_left = 60500 - ((get_date()).getSeconds()*1000) - (get_date()).getMilliseconds();
         time_display2 = LabelMgr.labelScreen(current_display_time, time_x_position, time_y_position, visible, time_font_size, get_display_color(), true);
 
         displayed_time = current_display_time;
-
-        indicator_font_size = core.getScreenWidth()*0.09;
-        if (screen_aspect > 2.75) {
-            indicator_font_size = (core.getScreenHeight()*2.75)*0.09;
-        }
-        seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
-        if (typeof sunrise_countdown !== 'undefined') {
-            LabelMgr.deleteLabel(sunrise_countdown);
-        }
-        if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 25*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
-            seconds_till_sunrise = (seconds_till_sunrise <= 25*60 ? seconds_till_sunrise : -1); 
-            if (Math.floor(seconds_till_sunrise/60) > 20) {
-                icon = "🌕";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 15) {
-                icon = "🌖";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 10) {
-                icon = "🌗";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 5) {
-                icon = "🌘";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunrise/60) > 0){
-                icon = "🌑";
-                icon_color = "#EEE4A7";
-            } else {
-                icon = get_twilight_icon();
-                icon_color = get_display_color();
-            }
-            sunrise_countdown = LabelMgr.labelScreen(icon, (core.getScreenWidth()-(core.getScreenWidth()*0.18)), (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true, time_left);
-        }
-
-        seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
-        if (typeof sunset_countdown !== 'undefined') {
-            LabelMgr.deleteLabel(sunset_countdown);
-        }
-        if ((seconds_till_sunset > 0 && seconds_till_sunset <= 25*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
-            seconds_till_sunset = (seconds_till_sunset <= 25*60 ? seconds_till_sunset : -1);
-            if (Math.floor(seconds_till_sunset/60) > 20) {
-                icon = "🌑";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 15) {
-                icon = "🌒";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 10) {
-                icon = "🌓";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 5) {
-                icon = "🌔";
-                icon_color = "#EEE4A7";
-            } else if (Math.floor(seconds_till_sunset/60) > 0) {
-                icon = "🌕";
-                icon_color = "#EEE4A7";
-            } else {
-                icon = get_twilight_icon();
-                icon_color = get_display_color();
-            }
-            sunset_countdown = LabelMgr.labelScreen(icon, 0, (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true, time_left);
-        } 
-
     }
+
+    indicator_font_size = core.getScreenWidth()*0.09;
+    if (screen_aspect > 2.75) {
+        indicator_font_size = (core.getScreenHeight()*2.75)*0.09;
+    }
+    seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
+    if (typeof sunrise_countdown !== 'undefined') {
+        LabelMgr.deleteLabel(sunrise_countdown);
+    }
+    if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 25*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
+        seconds_till_sunrise = (seconds_till_sunrise <= 25*60 ? seconds_till_sunrise : -1); 
+        if (Math.floor(seconds_till_sunrise/60) > 20) {
+            icon = "🌕";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunrise/60) > 15) {
+            icon = "🌖";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunrise/60) > 10) {
+            icon = "🌗";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunrise/60) > 5) {
+            icon = "🌘";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunrise/60) > 0){
+            icon = "🌑";
+            icon_color = "#EEE4A7";
+        } else {
+            icon = get_twilight_icon();
+            icon_color = get_display_color();
+        }
+        sunrise_countdown = LabelMgr.labelScreen(icon, (core.getScreenWidth()-(core.getScreenWidth()*0.18)), (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
+    }
+
+    seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
+    if (typeof sunset_countdown !== 'undefined') {
+        LabelMgr.deleteLabel(sunset_countdown);
+    }
+    if ((seconds_till_sunset > 0 && seconds_till_sunset <= 25*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
+        seconds_till_sunset = (seconds_till_sunset <= 25*60 ? seconds_till_sunset : -1);
+        if (Math.floor(seconds_till_sunset/60) > 20) {
+            icon = "🌑";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunset/60) > 15) {
+            icon = "🌒";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunset/60) > 10) {
+            icon = "🌓";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunset/60) > 5) {
+            icon = "🌔";
+            icon_color = "#EEE4A7";
+        } else if (Math.floor(seconds_till_sunset/60) > 0) {
+            icon = "🌕";
+            icon_color = "#EEE4A7";
+        } else {
+            icon = get_twilight_icon();
+            icon_color = get_display_color();
+        }
+        sunset_countdown = LabelMgr.labelScreen(icon, 0, (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
+    } 
     //Always tick at least once a second to prevent large jumps of background.
     wait_till_next_tick();
 }
