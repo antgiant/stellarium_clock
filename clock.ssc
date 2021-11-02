@@ -22,6 +22,8 @@ invisible = false;
 v_fov = 30;
 h_fov = v_fov*1.75; //Estimating Horizontal FOV. Assumes screen aspect ration of 2:1
 displayed_time = "";
+last_sunrise_icon = "";
+last_sunset_icon = "";
 tock = true;
 if (typeof night_look_direction === 'undefined') {
     //If undefined look to North Pole in Northern Hemisphere and South Pole in Southern Hemisphere
@@ -402,9 +404,7 @@ while (true) {
         indicator_font_size = (core.getScreenHeight()*2.75)*0.09;
     }
     seconds_till_sunrise = Math.floor(sunup.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
-    if (typeof sunrise_countdown !== 'undefined') {
-        LabelMgr.deleteLabel(sunrise_countdown);
-    }
+
     if ((seconds_till_sunrise > 0 && seconds_till_sunrise <= 25*60) || (sun["azimuth"] < 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
         seconds_till_sunrise = (seconds_till_sunrise <= 25*60 ? seconds_till_sunrise : -1); 
         if (Math.floor(seconds_till_sunrise/60) > 20) {
@@ -426,13 +426,27 @@ while (true) {
             icon = get_twilight_icon();
             icon_color = get_display_color();
         }
-        sunrise_countdown = LabelMgr.labelScreen(icon, (core.getScreenWidth()-(core.getScreenWidth()*0.18)), (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
+        
+        if (last_sunrise_icon != icon) {
+            if (typeof sunrise_countdown !== 'undefined') {
+                LabelMgr.deleteLabel(sunrise_countdown);
+            }
+            sunrise_countdown = LabelMgr.labelScreen(icon, (core.getScreenWidth()-(core.getScreenWidth()*0.18)), (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
+            last_sunrise_icon = icon;
+            if (debug) {
+                core.debug(icon);
+            }
+        }
+
+    } else if (typeof sunrise_countdown !== 'undefined' && LabelMgr.getLabelShow(sunrise_countdown)) {
+        LabelMgr.deleteLabel(sunrise_countdown);
+        last_sunrise_icon = "";
+        if (debug) {
+            core.debug("Sunrise Icon Cleared");
+        }
     }
 
     seconds_till_sunset = Math.floor(sundown.getTime()/1000)-Math.floor((get_date()).getTime()/1000);
-    if (typeof sunset_countdown !== 'undefined') {
-        LabelMgr.deleteLabel(sunset_countdown);
-    }
     if ((seconds_till_sunset > 0 && seconds_till_sunset <= 25*60) || (sun["azimuth"] > 180 && (sun["altitude"] <= 0 && sun["altitude"] >= -18))) {
         seconds_till_sunset = (seconds_till_sunset <= 25*60 ? seconds_till_sunset : -1);
         if (Math.floor(seconds_till_sunset/60) > 20) {
@@ -454,8 +468,24 @@ while (true) {
             icon = get_twilight_icon();
             icon_color = get_display_color();
         }
-        sunset_countdown = LabelMgr.labelScreen(icon, 0, (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
-    } 
+
+        if (last_sunset_icon != icon) {
+            if (typeof sunset_countdown !== 'undefined') {
+                LabelMgr.deleteLabel(sunset_countdown);
+            }
+            sunset_countdown = LabelMgr.labelScreen(icon, 0, (core.getScreenHeight()*0.70), visible, indicator_font_size, icon_color, true);
+            last_sunset_icon = icon;
+            if (debug) {
+                core.debug(icon);
+            }
+        }
+    } else if (typeof sunset_countdown !== 'undefined' && LabelMgr.getLabelShow(sunset_countdown)) {
+        LabelMgr.deleteLabel(sunset_countdown);
+        last_sunset_icon = "";
+        if (debug) {
+            core.debug("Sunset Icon Cleared");
+        }
+}
     //Always tick at least once a second to prevent large jumps of background.
     wait_till_next_tick();
 }
