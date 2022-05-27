@@ -29,6 +29,10 @@ if (typeof night_look_direction === 'undefined') {
     //If undefined look to North Pole in Northern Hemisphere and South Pole in Southern Hemisphere
     var night_look_direction = (lat >= 0?360:180);
 }
+if (typeof bounce_time === 'undefined') {
+    //Only bounce time if explicitly turned on
+    var bounce_time = false;
+}
 
 //     core.debug('h_fov = ' + h_fov);
 
@@ -392,6 +396,15 @@ while (true) {
             } else {
                 time_y_position = ((core.getScreenHeight()/-2.3)*((screen_aspect) - 2));
             }
+        }
+
+        if (bounce_time) {
+            font_pixel_height = (time_font_size*.77);
+            text_pixel_width_status_small = (current_display_time.slice(0, 1) == " ");
+            text_pixel_width_large = time_font_size*2.84;
+            text_pixel_width_small = time_font_size*2.27;
+            vertical_play_top = ((core.getScreenHeight() - font_pixel_height)/2) + (screen_aspect < 2?0:(time_y_position/6));
+            vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (screen_aspect < 2?0:(time_y_position/6));
         }
 
         time_display2 = LabelMgr.labelScreen(current_display_time, time_x_position, time_y_position, visible, time_font_size, get_display_color(), true);
