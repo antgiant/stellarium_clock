@@ -33,10 +33,11 @@ if (typeof bounce_speed === 'undefined') {
     //Speed multiplier (Number of pixels per movement step)
     var bounce_speed = 0;
 }
-x_bounce = 0;
-x_bounce_positive = true;
-y_bounce = 0;
-y_bounce_positive = true;
+//Randomize start direction and position if utilized.
+x_bounce = Math.floor((Math.random() * (core.getScreenWidth()/4)) + 1) - (core.getScreenWidth()/8);
+x_bounce_positive = (Math.floor((Math.random() * 2) + 1) == 1);
+y_bounce = Math.floor((Math.random() * (core.getScreenHeight()/4)) + 1) - (core.getScreenHeight()/12);
+y_bounce_positive = (Math.floor((Math.random() * 2) + 1) == 1);
 
 //     core.debug('h_fov = ' + h_fov);
 
