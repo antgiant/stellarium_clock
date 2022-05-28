@@ -180,6 +180,53 @@ function get_display_color() {
 //    }
 }
 
+function get_bounce_amount(time_font_size, current_display_time, time_x_position, time_y_position) {
+    output = {
+        x: time_x_position,
+        y: time_y_position,
+    };
+    screen_aspect = core.getScreenWidth()/core.getScreenHeight();
+    dark_night = (sun["altitude"] < -18);
+    font_pixel_height = (time_font_size*.77);
+    text_pixel_width_status_small = (current_display_time.slice(0, 1) == " ");
+    horizontal_play_large = (core.getScreenWidth() - (time_font_size*2.84))/2;
+    horizontal_play_small = (core.getScreenWidth() - (time_font_size*2.27))/2;
+    vertical_play_top = ((core.getScreenHeight() - font_pixel_height)/2) + (screen_aspect < 2?0:(time_y_position/6));
+    vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (screen_aspect < 2?0:(time_y_position/6));
+    
+    if (x_bounce_positive) {
+        x_bounce += bounce_speed;
+    } else {
+        x_bounce -= bounce_speed
+    }
+    if (Math.abs(x_bounce) >= (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large)) {
+        x_bounce_positive = !x_bounce_positive;
+        if (x_bounce_positive) {
+            x_bounce = -(text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
+        } else {
+            x_bounce = (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
+        }
+    }
+    output.x += x_bounce;
+
+    if (y_bounce_positive) {
+        y_bounce += bounce_speed;
+    } else {
+        y_bounce -= bounce_speed
+    } 
+    if (y_bounce >= vertical_play_top || y_bounce < 0) {
+        y_bounce_positive = !y_bounce_positive;
+        if (y_bounce_positive) {
+            y_bounce = 0;
+        } else {
+            y_bounce = vertical_play_top;
+        }
+    }
+    output.y -= y_bounce;
+
+    return output;
+}
+
 function get_horizon_offset(azimuth) {
     current_time = get_date();
 
@@ -403,42 +450,10 @@ while (true) {
         }
 
         if (bounce_speed > 0) {
-            font_pixel_height = (time_font_size*.77);
-            text_pixel_width_status_small = (current_display_time.slice(0, 1) == " ");
-            horizontal_play_large = (core.getScreenWidth() - (time_font_size*2.84))/2;
-            horizontal_play_small = (core.getScreenWidth() - (time_font_size*2.27))/2;
-            vertical_play_top = ((core.getScreenHeight() - font_pixel_height)/2) + (screen_aspect < 2?0:(time_y_position/6));
-            vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (screen_aspect < 2?0:(time_y_position/6));
-            
-            if (x_bounce_positive) {
-                x_bounce += bounce_speed;
-            } else {
-                x_bounce -= bounce_speed
-            }
-            if (Math.abs(x_bounce) >= (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large)) {
-                x_bounce_positive = !x_bounce_positive;
-                if (x_bounce_positive) {
-                    x_bounce = -(text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
-                } else {
-                    x_bounce = (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
-                }
-            }
-            time_x_position += x_bounce;
-
-            if (y_bounce_positive) {
-                y_bounce += bounce_speed;
-            } else {
-                y_bounce -= bounce_speed
-            }
-            if (y_bounce >= vertical_play_top || y_bounce < 0) {
-                y_bounce_positive = !y_bounce_positive;
-                if (y_bounce_positive) {
-                    y_bounce = 0;
-                } else {
-                    y_bounce = vertical_play_top;
-                }
-            }
-            time_y_position -= y_bounce;        }
+            bounce = get_bounce_amount(time_font_size, current_display_time, time_x_position, time_y_position);
+            time_x_position = bounce.x;
+            time_y_position = bounce.y;
+        }
 
         time_display2 = LabelMgr.labelScreen(current_display_time, time_x_position, time_y_position, visible, time_font_size, get_display_color(), true);
 
