@@ -10,7 +10,7 @@ var place = "[clock_place_name]";
 
 //Optionally
 var night_look_direction = [Compass direction to look at night];
-bounce_time = [true/false]; //Bounce the time around on screen to avoid burn-in
+bounce_speed = [speed_of_bounce]; //Bounce the time around on screen to avoid burn-in. (This many pixels per "tick")
 
 //Setting this overrides the time and instead shows a countdown
 //  to this date and time. If date is in the past it will revert

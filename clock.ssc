@@ -29,10 +29,14 @@ if (typeof night_look_direction === 'undefined') {
     //If undefined look to North Pole in Northern Hemisphere and South Pole in Southern Hemisphere
     var night_look_direction = (lat >= 0?360:180);
 }
-if (typeof bounce_time === 'undefined') {
-    //Only bounce time if explicitly turned on
-    var bounce_time = false;
+if (typeof bounce_speed === 'undefined') {
+    //Speed multiplier (Number of pixels per movement step)
+    var bounce_speed = 0;
 }
+x_bounce = 0;
+x_bounce_positive = true;
+y_bounce = 0;
+y_bounce_positive = true;
 
 //     core.debug('h_fov = ' + h_fov);
 
@@ -398,14 +402,43 @@ while (true) {
             }
         }
 
-        if (bounce_time) {
+        if (bounce_speed > 0) {
             font_pixel_height = (time_font_size*.77);
             text_pixel_width_status_small = (current_display_time.slice(0, 1) == " ");
-            text_pixel_width_large = time_font_size*2.84;
-            text_pixel_width_small = time_font_size*2.27;
+            horizontal_play_large = (core.getScreenWidth() - (time_font_size*2.84))/2;
+            horizontal_play_small = (core.getScreenWidth() - (time_font_size*2.27))/2;
             vertical_play_top = ((core.getScreenHeight() - font_pixel_height)/2) + (screen_aspect < 2?0:(time_y_position/6));
             vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (screen_aspect < 2?0:(time_y_position/6));
-        }
+            
+            if (x_bounce_positive) {
+                x_bounce += bounce_speed;
+            } else {
+                x_bounce -= bounce_speed
+            }
+            if (Math.abs(x_bounce) >= (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large)) {
+                x_bounce_positive = !x_bounce_positive;
+                if (x_bounce_positive) {
+                    x_bounce = -(text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
+                } else {
+                    x_bounce = (text_pixel_width_status_small?horizontal_play_small:horizontal_play_large);
+                }
+            }
+            time_x_position += x_bounce;
+
+            if (y_bounce_positive) {
+                y_bounce += bounce_speed;
+            } else {
+                y_bounce -= bounce_speed
+            }
+            if (y_bounce >= vertical_play_top || y_bounce < 0) {
+                y_bounce_positive = !y_bounce_positive;
+                if (y_bounce_positive) {
+                    y_bounce = 0;
+                } else {
+                    y_bounce = vertical_play_top;
+                }
+            }
+            time_y_position -= y_bounce;        }
 
         time_display2 = LabelMgr.labelScreen(current_display_time, time_x_position, time_y_position, visible, time_font_size, get_display_color(), true);
 
