@@ -192,7 +192,7 @@ function get_bounce_amount(time_font_size, current_display_time, time_x_position
     horizontal_play_large = (core.getScreenWidth() - (time_font_size*2.84))/2;
     horizontal_play_small = (core.getScreenWidth() - (time_font_size*2.27))/2;
     vertical_play_top = ((core.getScreenHeight() - font_pixel_height)/2) + (screen_aspect < 2?0:(time_y_position/6));
-    vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (screen_aspect < 2?0:(time_y_position/6));
+    vertical_play_bottom = ((core.getScreenHeight() - font_pixel_height)/2) - (time_y_position);
     
     if (x_bounce_positive) {
         x_bounce += bounce_speed;
@@ -213,11 +213,11 @@ function get_bounce_amount(time_font_size, current_display_time, time_x_position
         y_bounce += bounce_speed;
     } else {
         y_bounce -= bounce_speed
-    } 
-    if (y_bounce >= vertical_play_top || y_bounce < 0) {
+    }
+    if (y_bounce >= vertical_play_top || y_bounce < (dark_night?-vertical_play_bottom:0)) {
         y_bounce_positive = !y_bounce_positive;
         if (y_bounce_positive) {
-            y_bounce = 0;
+            y_bounce = (dark_night?-vertical_play_bottom:0);
         } else {
             y_bounce = vertical_play_top;
         }
